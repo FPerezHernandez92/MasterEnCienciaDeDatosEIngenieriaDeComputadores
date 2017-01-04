@@ -1,5 +1,4 @@
 #FRANCISCO PÉREZ HERNÁNDEZ 20076629K
-setwd("~/Dropbox/zMaster/zRStudio")
 #Dudas: T9 da fallo las dos últimas
 
 require(MASS)
@@ -43,7 +42,7 @@ points(lstat,fitknn5$fitted.values,col="red",pch=20)
 points(lstat,fitknn6$fitted.values,col="green",pch=20)
 
 #8 K-fold cross-validation. Obtención de las medidas del error sobre las mismas particiones
-nombre <- "ICD/california"
+nombre <- "california"
 run_lm_fold <- function(i, x, tt = "test") {
   file <- paste(x, "-5-", i, "tra.dat", sep="")
   x_tra <- read.csv(file, comment.char="@") 
@@ -68,7 +67,7 @@ lmMSEtrain<-mean(sapply(1:5,run_lm_fold,nombre,"train"))
 lmMSEtest<-mean(sapply(1:5,run_lm_fold,nombre,"test"))
 
 #9
-nombre <- "ICD/california"
+nombre <- "california"
 run_knn_fold <- function(i, x, tt = "test") {
   file <- paste(x, "-5-", i, "tra.dat", sep="")
   x_tra <- read.csv(file, comment.char="@") 
@@ -93,7 +92,7 @@ knnMSEtrain<-mean(sapply(1:5,run_knn_fold,nombre,"train"))
 knnMSEtest<-mean(sapply(1:5,run_knn_fold,nombre,"test"))
 
 #10 Como afrontar un problema dado
-California <- read.csv("ICD/california.dat", comment.char="@") 
+California <- read.csv("california.dat", comment.char="@") 
 n<-length(names(California)) -1;
 names(California)[1:n] <- paste ("X", 1:n, sep=""); names(California)[n+1] <- "Y" 
 temp <- California
@@ -119,7 +118,7 @@ summary(fit3)$adj.r.squared
 summary(fit4)$adj.r.squared
 
 #12
-nombre <- "ICD/california"
+nombre <- "california"
 run_lm_fold <- function(i, x, tt = "test") {
   file <- paste(x, "-5-", i, "tra.dat", sep=""); x_tra <- read.csv(file, comment.char="@") 
   file <- paste(x, "-5-", i, "tst.dat", sep=""); x_tst <- read.csv(file, comment.char="@") 
@@ -139,12 +138,12 @@ lmMSEtest<-mean(sapply(1:5,run_lm_fold,nombre,"test"))
 
 #14 Comparativa general entre distintos algoritmos
 #leemos la tabla con los errores medios de test
-resultados <- read.csv("ICD/regr_test_alumnos.csv")
+resultados <- read.csv("regr_test_alumnos.csv")
 tablatst <- cbind(resultados[,2:dim(resultados)[2]]) 
 colnames(tablatst) <- names(resultados)[2:dim(resultados)[2]] 
 rownames(tablatst) <- resultados[,1]
 #leemos la tabla con los errores medios de test
-resultados <- read.csv("ICD/regr_train_alumnos.csv")
+resultados <- read.csv("regr_train_alumnos.csv")
 tablatra <- cbind(resultados[,2:dim(resultados)[2]]) 
 colnames(tablatra) <- names(resultados)[2:dim(resultados)[2]] 
 rownames(tablatra) <- resultados[,1]
@@ -177,7 +176,7 @@ pairwise.wilcox.test(as.matrix(tablatst), groups, p.adjust = "holm", paired = TR
 ##################################
 # EJERCICIO 2
 ##################################
-xtra <- read.csv("ICD/california.dat", comment.char = "@")
+xtra <- read.csv("california.dat", comment.char = "@")
 #Asignación manual
 names(xtra) <- c("Longitude", "Latitude", "HousingMedianAge",
                  "TotalRooms", "TotalBedrooms", "Population", "Households", "MedianIncome", "MedianHouseValue")
@@ -231,7 +230,7 @@ points(lstat,fitknn5$fitted.values,col="green",pch=20)
 
 #8 K-fold cross-validation. Obtención de las medidas del error sobre las mismas particiones
 #Modelo de todas las variables, Regresión múltiple
-nombre <- "ICD/california"
+nombre <- "california"
 run_lm_fold <- function(i, x, tt = "test") {
   file <- paste(x, "-5-", i, "tra.dat", sep="")
   x_tra <- read.csv(file, comment.char="@") 
@@ -257,7 +256,7 @@ lmMSEtest<-mean(sapply(1:5,run_lm_fold,nombre,"test"))
 
 #9
 #Modelo con todas las variables, Knn
-nombre <- "ICD/california"
+nombre <- "california"
 run_knn_fold <- function(i, x, tt = "test") {
   file <- paste(x, "-5-", i, "tra.dat", sep="")
   x_tra <- read.csv(file, comment.char="@") 
@@ -286,7 +285,7 @@ knnMSEtest
 #un MSE menor que en Regresión Múltiple
 
 #10 Como afrontar un problema dado
-California <- read.csv("ICD/california.dat", comment.char="@") 
+California <- read.csv("california.dat", comment.char="@") 
 n<-length(names(California)) -1;
 names(California)[1:n] <- paste ("X", 1:n, sep=""); names(California)[n+1] <- "Y" 
 temp <- California
@@ -320,7 +319,7 @@ summary(fit4)$adj.r.squared
 #Vemos como el que mejor R2 presenta es el fit4 con un 68,62% de explicación del problema
 
 #12
-nombre <- "ICD/california"
+nombre <- "california"
 run_lm_fold <- function(i, x, tt = "test") {
   file <- paste(x, "-5-", i, "tra.dat", sep=""); x_tra <- read.csv(file, comment.char="@") 
   file <- paste(x, "-5-", i, "tst.dat", sep=""); x_tst <- read.csv(file, comment.char="@") 
@@ -339,7 +338,7 @@ lm2MSEtrain<-mean(sapply(1:5,run_lm_fold,nombre,"train"))
 lm2MSEtest<-mean(sapply(1:5,run_lm_fold,nombre,"test"))
 
 #Agregamos ademas el mismo modelo con Knn para comparar:
-nombre <- "ICD/california"
+nombre <- "california"
 run_knn_fold <- function(i, x, tt = "test") {
   file <- paste(x, "-5-", i, "tra.dat", sep=""); x_tra <- read.csv(file, comment.char="@") 
   file <- paste(x, "-5-", i, "tst.dat", sep=""); x_tst <- read.csv(file, comment.char="@") 
@@ -364,12 +363,12 @@ knn2MSEtest
 
 #14 Comparativa general entre distintos algoritmos
 #leemos la tabla con los errores medios de test
-resultados <- read.csv("ICD/regr_test_alumnos.csv")
+resultados <- read.csv("regr_test_alumnos.csv")
 tablatst <- cbind(resultados[,2:dim(resultados)[2]]) 
 colnames(tablatst) <- names(resultados)[2:dim(resultados)[2]] 
 rownames(tablatst) <- resultados[,1]
 #leemos la tabla con los errores medios de test
-resultados <- read.csv("ICD/regr_train_alumnos.csv")
+resultados <- read.csv("regr_train_alumnos.csv")
 tablatra <- cbind(resultados[,2:dim(resultados)[2]]) 
 colnames(tablatra) <- names(resultados)[2:dim(resultados)[2]] 
 rownames(tablatra) <- resultados[,1]
@@ -439,3 +438,4 @@ tam <- dim(tablatra)
 groups <- rep(1:tam[2], each=tam[1])
 pairwise.wilcox.test(as.matrix(tablatra), groups, p.adjust = "holm", paired = TRUE)
 #Existen diferencias significativas a favor de los 3 algoritmos
+
