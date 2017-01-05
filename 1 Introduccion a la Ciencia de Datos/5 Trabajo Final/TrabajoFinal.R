@@ -710,10 +710,176 @@ pairwise.wilcox.test(as.matrix(tablatra), groups, p.adjust = "holm", paired = TR
 
 
 
+###############################################################
+###############################################################
+###############################################################
+##################### C) CLASIFICACIÓN ########################
+###############################################################
+###############################################################
+
+rm(list=ls())
+australian <- read.csv("australian/australian.dat", comment.char = "@", header = FALSE)
+attach(australian)
+##8 y 15
+###############################################################
+############################ KNN ##############################
+###############################################################
+
+##Examinamos la estructura del dataset
+str(australian)
+##Vemos el número de variables para cada clase
+table(australian$V15)
+##Pasamos la V15 a factor
+australian$V15 <- factor(australian$V15,levels = c(0,1), label = c(0,1))
+##Vemos el porcentaje de cada clase para el dataset
+round(prop.table(table(australian$V15))*100,digits=1)
+##Normalizamos toda la base de datos
+normalize <- function(x) {
+  return ((x - min(x)) / (max(x) - min(x)))
+}
+australian_n <- as.data.frame(lapply(australian[1:14],normalize))
+##Visualizamos variables
+plot(australian[,1:14])
+plot(australian_n[,1:14],col=australian[,15])
+##Calculamos la correlación entre variables
+cor(australian[,1:14])
+##Creamos el conjunto de training y de test y sus etiquetas
+tamanio_tt <- nrow(australian)*0.8
+australian_train <- australian_n[1:tamanio_tt,]
+australian_test <- australian_n[(tamanio_tt+1):nrow(australian),]
+australian_train_labels <- australian[1:tamanio_tt,15]
+australian_test_labels <- australian[(tamanio_tt+1):nrow(australian),15]
+##Entrenamos un modelo de los datos
+library(class)
+library(kknn)
+set.seed(1234)
+australian_test_pred <- knn(train=australian_train, test=australian_test,cl=australian_train_labels,k=21)
+##Evaluamos el modelo
+table(australian_test_pred,australian_test_labels)
+mean(australian_test_pred==australian_test_labels)
+##Por lo que obtenemos un modelo que explica el 85,5% del problema
+set.seed(1234)
+australian_test_pred <- knn(train=australian_train, test=australian_test,cl=australian_train_labels,k=7)
+##Evaluamos el modelo
+table(australian_test_pred,australian_test_labels)
+mean(australian_test_pred==australian_test_labels)
+##Por lo que obtenemos un modelo que explica el 84,7% del problema
+
+##Con caret podemos también hacer un modelo knn
+require(caret)
+set.seed(1234)
+knnModel <- train(x = australian[1:tamanio_tt,-15], y = australian[1:tamanio_tt,15],method = "knn", preProc = c("center","scale"))
+knnModel
+##Siendo el mejor modelo k=9
+set.seed(1234)
+knnFit <- train(australian_train, australian_train_labels, method="knn", metric="Accuracy", tuneGrid = data.frame(.k=1:15))
+knnFit
+##Si le decimos los valores de k que debe tomar, vemos como con k = 15 conseguimos el mejor modelo
+
+knnPred <- predict(knnModel,newdata = australian_test)
+testData = australian[(tamanio_tt+1):nrow(australian),15]
+postResample(pred=knnPred, obs = testData)
+##Si aplicamos el conjunto de test sobre el modelo creado tenemos un modelo con el 57,9% de explicación
 
 
 
 
+set.seed(1234)
+##Voy a crear una función para aplicar knn a los modelos, para ver con que valor de k se obtienen mejores resultados
+aplicar_knn <- function(k){
+  mi_knn <- knn(train = australian_train, test = australian_test, cl = australian_train_labels, k)
+  accu <- postResample(pred = mi_knn, obs = testData)[1]
+}
+set.seed(1234)
+accuracy <- sapply(1:450,aplicar_knn)
+#Pinto las gráficas para ver los valores de accuracy
+plot(x=1:450,y=accuracy)
+plot(x=1:150,y=accuracy[1:150],type="l")
+plot(x=100:150,y=accuracy[100:150],type="l")
+plot(x=100:120,y=accuracy[100:120],type="l")
+max(accuracy)
+plot(x=105:115,y=accuracy[105:115],type="p")
+lines(x=105:115,y=accuracy[105:115],type="l",col="blue")
+#Vemos como hay 2 valores con accuracy = 0.884058 asique tenemos distintos k buenos
+
+
+
+
+####HASTA AQUI BIEN
+library(caret)
+library(class)
+aplicar_knn_fold<-function(train, test, train_labels, test_labels, K)
+{
+  accuracy<-rep(0,K)
+  for(i in 1:K)
+  {
+    fitMulti <- knn(train, test,cl = train_labels, k=i)
+    accuracy[i] <- postResample(pred = fitMulti, obs = test_labels)[1]
+  }
+  list(accuracy=accuracy)
+}
+
+run_knn_fold <- function(i, x, K, tt = "test") {
+  file <- paste(x, "-10-", i, "tra.dat", sep="")
+  x_tra <- read.csv(file, comment.char="@")
+  In <- length(names(x_tra)) - 1 
+  names(x_tra)[1:In] <- paste ("X", 1:In, sep="") 
+  names(x_tra)[In+1] <- "Y"
+  x_tra <- data.frame(lapply(x_tra, normalize))
+  x_tra$Y <- factor(x_tra$Y, levels = c(0, 1),labels = c("0", "1"))
+  if(tt == "test"){
+    file <- paste(x, "-10-", i, "tst.dat", sep="")
+    x_tst <- read.csv(file, comment.char="@")
+    names(x_tst)[1:In] <- paste ("X", 1:In, sep="") 
+    names(x_tst)[In+1] <- "Y"
+    x_tst <- data.frame(lapply(x_tst, normalize))
+    x_tst$Y <- factor(x_tst$Y, levels = c(0, 1), labels = c("0", "1"))
+  }
+  if (tt == "train") {
+    test_labels <- x_tra[,15]
+    test <- x_tra
+  }
+  else {
+    test_labels <- x_tst[,15]
+    test <- x_tst
+  }
+  train_labels <- x_tra[,15]
+  aplicar_knn_fold(x_tra[1:14], test[1:14], train_labels, test_labels, K)
+}
+
+mean_dataFrame <- function(dataFrame)
+{
+  n <- length(dataFrame[1]$accuracy)
+  m <- rep(0, n)
+  for(i in 1:n)
+  {
+    m[i] <- mean(as.numeric(dataFrame[i,]))
+  }
+  return(m)	
+}
+
+set.seed(1234)
+nombre <- "australian/australian"
+accuracy_train <- data.frame(sapply(1:10, run_knn_fold, nombre, 10, "train"))
+mean_accuracy_train <- mean_dataFrame(accuracy_train)
+num.max <- which(mean_accuracy_train==(max(mean_accuracy_train)))
+plot(y=mean_accuracy_train, x=c(1:10), xlab="K", ylab="Accuracy", type = "l", 
+     lwd=5, col="blue", main="Valores de K y Accuracy para Knn en train")
+points(x=num.max, y=mean_accuracy_train[num.max], pch = 19, col="red")
+name.max<-"K=" 
+name.max<-paste(name.max, num.max, sep = "")
+text(x=num.max, y=mean_accuracy_train[num.max], labels=name.max, cex= 1, pos=1)
+
+set.seed(1234)
+accuracy_test <- data.frame(sapply(1:10, run_knn_fold, nombre, 10, "test"))
+mean_accuracy_test <- mean_dataFrame(accuracy_test)
+num.max <- which(mean_accuracy_test==(max(mean_accuracy_test)))
+plot(y=mean_accuracy_test, x=c(1:10), xlab="K", ylab="Accuracy", type = "l", 
+     lwd=5, col="blue", main="Valores de K y Accuracy para Knn en test")
+points(x=num.max, y=mean_accuracy_test[num.max], pch = 19, col="red")
+name.max<-"K=" 
+name.max<-paste(name.max, num.max, sep = "")
+text(x=num.max, y=mean_accuracy_test[num.max], labels=name.max, cex= 1, pos=1)
 
 
 
