@@ -9,6 +9,7 @@ Primeramente se realizaron unos ejercicios de introduccion para familiarizarnos 
 
 ## 2 Mineria de datos: Aprendizaje no supervisado y deteccion de anomalias:
 En la parte practica de esta asignatura lo primero que se ha dado ha sido la deteccion de anomalias en R.
+En la parte de reglas de asociacion, se ha visto, en la primera parte, como extraer reglas de una BD con el metodo apriori.
 
 ## 2 Mineria de datos: Preprocesamiento y clasificacion:
 En la sesion 4 se ha visto la visualizacion de los datos para realizar el preprocesamiento.
