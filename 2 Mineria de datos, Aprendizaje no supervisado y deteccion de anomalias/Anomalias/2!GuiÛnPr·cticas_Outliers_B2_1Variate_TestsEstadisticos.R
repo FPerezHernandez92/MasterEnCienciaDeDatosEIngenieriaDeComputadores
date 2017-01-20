@@ -110,6 +110,7 @@ MiPlot_resultados_TestGrubbs(mydata.numeric)
 # Aplicamos el test de Grubbs sobre datos.con.dos.outliers.masking
 
 # COMPLETAR
+X11()
 mydata.numeric = datos.con.dos.outliers.masking
 plot(mydata.numeric)
 test.de.Grubbs = grubbs.test(mydata.numeric, two.sided = TRUE)
