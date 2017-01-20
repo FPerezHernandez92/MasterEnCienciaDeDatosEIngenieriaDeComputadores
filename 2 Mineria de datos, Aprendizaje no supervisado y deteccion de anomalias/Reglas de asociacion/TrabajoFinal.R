@@ -2,6 +2,7 @@
 # -En la primera parte hago bien el análisis de las reglas?
 # -En la segunda vez debería eliminar reglas? como?
 # -En MOPNAR hago bien el análisis de las reglas?
+# -¿Cómo se haría el análisis de reglas en grupos?
 
 setwd("~/Dropbox/zMaster/zRStudio/Master-en-Ciencia-De-Datos-e-Ingeniería-de-Computadores/2 Mineria de datos, Aprendizaje no supervisado y deteccion de anomalias/Reglas de asociacion")
 library(mlbench)
