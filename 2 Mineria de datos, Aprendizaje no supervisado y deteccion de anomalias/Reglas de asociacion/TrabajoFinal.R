@@ -5,6 +5,7 @@
 # -¿Cómo se haría el análisis de reglas en grupos?
 
 setwd("~/Dropbox/zMaster/zRStudio/Master-en-Ciencia-De-Datos-e-Ingeniería-de-Computadores/2 Mineria de datos, Aprendizaje no supervisado y deteccion de anomalias/Reglas de asociacion")
+library(arules)
 library(mlbench)
 #Cargamos la BD en nuestra zona de trabajo
 data(Zoo)
