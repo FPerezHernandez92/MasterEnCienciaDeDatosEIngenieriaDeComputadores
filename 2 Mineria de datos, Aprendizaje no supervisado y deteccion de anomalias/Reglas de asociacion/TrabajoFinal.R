@@ -92,11 +92,13 @@ quality(head(rules))
 #Podemos ordenar las reglas por el campo que más nos interese
 rulesSorted = sort(rules, by="confidence")
 inspect(head(rulesSorted)) 
+
 #Seleccionar un subconjunto de reglas que cumplan una condición. Por ejemplo, seleccionamos 
 #las reglas que tenga lift > 1.2 y que en el consecuente de la regla tengan el 
 #itemset feathers=FALSE
 rulesNoFeathers <- subset(rules, subset = lhs %in% "feathers=FALSE" & lift > 1.2) 
 inspect(head(rulesNoFeathers))
+
 #Eliminar las reglas redundantes
 subsetMatrix <- is.subset(rulesSorted, rulesSorted)
 subsetMatrix[lower.tri(subsetMatrix, diag=T)] <- NA
@@ -110,6 +112,7 @@ mInteres <- interestMeasure(rulesPruned, measure=c("hyperConfidence",
 #Podemos calcular estas medidas para nuestras reglas podadas y añadirselas a la sección 
 #quality para que los valores de las medidas nuevas salgan también cuando inspeccionamos 
 #las reglas:
+copRulesPruned <- rulesPruned
 quality(rulesPruned) <- cbind(quality(rulesPruned), mInteres)
 inspect(head(sort(rulesPruned, by="phi")))
 
@@ -122,149 +125,114 @@ plot(rulesPruned[1:6], method="graph", control=list(type="items"))
 #Podemos visualizar las reglas como una matriz agrupada. Los antecedentes en las columnas son 
 #agrupados usando clustering. En modo interactivo podemos hacer zoom del nodo que queramos 
 #estudiar y acceder a las reglas que lo componen para inspeccionarlas.
-
 #try: plot(rulesPruned, method="grouped", interactive=TRUE)
+
+####################################
+######## ANÁLISIS DE REGLAS ########
+####################################
 
 #Vamos a analizar algunas reglas por soporte
-inspect((sort(rulesPruned, by="support"))[1:20])
-#Como si no es domestico no es venenoso, vamos a ver que animales son domesticos y venenosos
-vector.es.domestico.y.venenoso <- (Zoo[["domestic"]]==TRUE & Zoo[["venomous"]]==TRUE)
-valores.es.domestico.y.venenoso <- (Zoo[vector.es.domestico.y.venenoso,])
-valores.es.domestico.y.venenoso
-#Por lo que podemos ver que la abeja es domestica y venenosa
-#Ahora vamos a ver la regla de que si respira, no tiene aletas
-vector.respira.y.con.aletas <- (Zoo[["breathes"]]==TRUE & Zoo[["fins"]]==TRUE)
-valores.respira.y.con.aletas <- (Zoo[vector.respira.y.con.aletas,])
-valores.respira.y.con.aletas
-#Podemos ver que los animales que respiran y que tienen aletas son los delfines,
-#una marsopa, la foca y el león marino
-
-#Vamos a analizar algunas reglas por confianza
-inspect((sort(rulesPruned, by="confidence"))[1:20])
-#Si no es depredador y respira, no tiene aletas
-vector.no.depredador.respira.sin.aletas <- (Zoo[["predator"]]==FALSE & Zoo[["breathes"]]==TRUE & Zoo[["fins"]]==FALSE)
-valores.no.depredador.respira.sin.aletas <- (Zoo[vector.no.depredador.respira.sin.aletas,])
-valores.no.depredador.respira.sin.aletas
-
-
-##############################
-######## ITEMS NEGADOS #######
-##############################
-summary(Zoo)
-#La única variable que podría negar en esta base de datos podría ser type
-es.mammal <- (Zoo[["type"]]=="mammal")
-es.bird <- (Zoo[["type"]]=="bird")
-es.reptile <- (Zoo[["type"]]=="reptile")
-es.fish <- (Zoo[["type"]]=="fish")
-es.amphibian <- (Zoo[["type"]]=="amphibian")
-es.insect <- (Zoo[["type"]]=="insect")
-es.mollusch.et.al <- (Zoo[["type"]]=="mollusc.et.al")
-Zoo$es.mammal <- as.factor(es.mammal)
-Zoo$es.bird <- as.factor(es.bird)
-Zoo$es.reptile <- as.factor(es.reptile)
-Zoo$es.fish <- as.factor(es.fish)
-Zoo$es.amphibian <- as.factor(es.amphibian)
-Zoo$es.insect <- as.factor(es.insect)
-Zoo$es.mollusch.et.al <- as.factor(es.mollusch.et.al)
-#Elimino la antigua variable type
-Zoo$type=NULL
-
-#Volvemos a hacer el análisis que se hizo anteriormente
-#Convertimos el data.frame en un conjunto de transacciones con la función as
-ZooTrans <- as(Zoo,"transactions")
-ZooTrans
-#Por lo que tenemos un conjunto de transacciones de 101 transaciones y 46 items
-#donde antes teniamos 39 items
-
-#Vemos el resumen de la BD de transacciones
-summary(ZooTrans)
-
-#Representar gráficamente la distribución de los items en las transacciones
-image(ZooTrans)
-
-#Para ver gráficamente que items son los más importantes:
-#donde el mínimo soporte será 0.6 y reducimos el tamaño de los títulos
-itemFrequencyPlot(ZooTrans, support = 0.6, cex.names=0.8)
-#Usamos apriori para extraer los itemsets frecuentes con minsop 0.6. 
-iZoo <- apriori(ZooTrans, parameter = list(support = 0.6, target="frequent"))
-#He aumentado el soporte al tener un mayor número de reglas
-#Orenamos por el valor de soporte
-iZoo <- sort(iZoo, by="support") 
-#Inspeccionamos los 10 primeros
-inspect(head(iZoo, n=10))
-#Podemos consultar el tamaño de los itemsets frecuentes
-size(iZoo)
-#Representamos con un diagrama de barras
-barplot(table(size(iZoo)), xlab="itemset size", ylab="count")
-#Inspeccionamos los itemsets frecuentes de tamaño 1
+inspect((sort(copRulesPruned, by="support"))[1:10])
+#Vemos como esta regla, la 1, tiene un lift menor que 1, por lo que no se espera que sea de utilidad
+#Veamos la confianza del consecuente, no es venenoso
 inspect(iZoo[size(iZoo)==1])
+#Por lo que vamos a compararlas:
+inspect((sort(copRulesPruned, by="support"))[1])
+inspect(iZoo[size(iZoo)==1][1])
+#Vemos como la confianza de la regla y el soporte del consecuente son iguales, y al tener el lift
+#menor que 1, tenemos una regla que no nos aporta nada
 
-#Sacamos un vector lógico indicando que itemsets es máximal
-imaxZoo <- iZoo[is.maximal(iZoo)]
-#Mostramos los 6 primeros ordenados por su valor de soporte
-inspect(head(sort(imaxZoo, by="support")))
-#Sacamos un vector lógico indicando que itemsets es cerrado
-icloZoo <- iZoo[is.closed(iZoo)]
-#Mostramos los 6 primeros ordenados por su valor de soporte
-inspect(head(sort(icloZoo, by="support")))
+#Seguimos analizando, ordenando por lift
+inspect((sort(copRulesPruned, by="lift"))[1:10])
+#La regla 9 puede ser interesante, analicemos su consecuente
+inspect(iZoo[size(iZoo)==1])
+#Las comparamos:
+inspect((sort(copRulesPruned, by="lift"))[9])
+inspect(iZoo[size(iZoo)==1][12])
+#Tenemos un lift alto, un soporte del 0.59, y pasamos a una confianza del 0.98, por lo que 
+#esta regla sería interesante. por lo que si pone huevos, no pone leche
+#Veamos que animales podrían ser estos:
+vector.pone.huevos.no.da.leche <- (Zoo[["eggs"]]==TRUE & Zoo[["milk"]]==FALSE)
+valores.pone.huevos.no.da.leche <- (Zoo[vector.pone.huevos.no.da.leche,])
+dim(valores.pone.huevos.no.da.leche)
+head(valores.pone.huevos.no.da.leche)
+#Donde tenemos 58 animales que cumplen estas condiciones, como puede ser el pollo
 
-#Podemos pintar un gráfico de barras para ver la cantidad de itemsets frecuentes, cerrados
-#y maximales que se han generado
-barplot( c(frequent=length(iZoo), closed=length(icloZoo), maximal=length(imaxZoo)), 
-         ylab="count", xlab="itemsets")
+#Seguimos analizando, ordenando por confidence
+inspect((sort(copRulesPruned, by="confidence"))[1:10])
+#Las 5 primeras reglas pueden ser interesantes, analicemos su consecuente
+inspect(iZoo[size(iZoo)==1])
+#Las comparamos:
+inspect((sort(copRulesPruned, by="lift"))[1:5])
+inspect(iZoo[size(iZoo)==1][c(22,14,13,12)])
+#Tenemos un lift alto, un soporte entre el 0.40 y 0.59, y pasamos a una confianza del 0.97 y 1, por lo que 
+#estas reglas serían interesantes. 
 
-#Usamos apriori para extraer las reglas con mínimo soporte 0.6 y confianza 0.8
-#con una longitud minima de 2
-rules <- apriori(ZooTrans, parameter = list(support = 0.6, confidence = 0.8, minlen = 2))
-#Obtenemos información resumida del conjunto
-summary(rules)
-#Podemos ver las reglas (lhs es el antecedente y rhs el consecuente de la regla) y sus 
-#valores para las medidas soporte, confianza y lift
-inspect(head(rules))
-#También podemos ver solo los valores de las medidas de calidad 
-quality(head(rules))
+#Analicemos las reglas en grupos 
+inspect((sort(copRulesPruned, by="lift"))[1:10])
+#La 9 sería que pone huevos y no da leche, puede ser interante
+rulesPoneHuevos <- subset(rules, subset = lhs %in% "eggs=TRUE" & lift > 1.2) 
+rulesPoneHuevos
+#Tenemos un total de 31 reglas con este consecuente
+size(rulesPoneHuevos)
+sortRulesPoneHuevos <- (sort(rulesPoneHuevos,by ="confidence"))
+#Buscamos que de leche
+consecuenteDaLeche <- subset(rulesPoneHuevos,subset = rhs %in% "milk=TRUE" )
+consecuenteDaLeche
+#Nos han quedado 0 reglas, por lo que esto no pasará nunca
 
+#Analicemos las reglas en grupos 
+sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
+inspect(head(sortCopRulesPruned[size(sortCopRulesPruned)==2]))
+#Voy a analizar la 6 al tener un soporte del 0.47 y una confianza del 0.84
+#Esta regla es que si no tiene catsize, no da leche
+rulesNoCatsize <- subset(rules, subset = lhs %in% "catsize=FALSE" & lift > 1.2) 
+rulesNoCatsize
+#Tenemos un total de 21 reglas con este consecuente
+size(rulesNoCatsize)
+sortRulesNoCatsize <- (sort(rulesNoCatsize,by ="confidence"))
+#Buscamos que de leche
+consecuenteDaLeche <- subset(rulesNoCatsize,subset = rhs %in% "milk=TRUE" )
+consecuenteDaLeche
+#Nos han quedado 0 reglas, por lo que esto no pasará nunca
+
+set.seed(1234)
+#Usamos apriori para extraer las reglas con mínimo soporte 0.1 y confianza 0.1
+#con una longitud minima de 2, para encontrar más reglas y poder sacar alguna
+#conclusión de un análisis por grupos
+rules <- apriori(ZooTrans, parameter = list(support = 0.1, confidence = 0.1, minlen = 2))
 #Podemos ordenar las reglas por el campo que más nos interese
 rulesSorted = sort(rules, by="confidence")
-inspect(head(rulesSorted)) 
-#Seleccionar un subconjunto de reglas que cumplan una condición. Por ejemplo, seleccionamos 
-#las reglas que tenga lift > 1.2 y que en el consecuente de la regla tengan el 
-#itemset feathers=FALSE
-rulesNoFeathers <- subset(rules, subset = lhs %in% "feathers=FALSE" & lift > 1.2) 
-inspect(head(rulesNoFeathers))
-#Eliminar las reglas redundantes
-subsetMatrix <- is.subset(rulesSorted, rulesSorted)
-subsetMatrix[lower.tri(subsetMatrix, diag=T)] <- NA
-redundant <- colSums(subsetMatrix, na.rm=T) >= 1
-rulesPruned <- rulesSorted[!redundant] # remove redundant rules 
-inspect(head(rulesPruned))
+copRulesPruned <- rulesSorted
 
-#También podemos calcular para itemsets o para reglas otras medidas de calidad 
-mInteres <- interestMeasure(rulesPruned, measure=c("hyperConfidence", 
-                                                   "leverage" ,"phi", "gini"), transactions=ZooTrans)
-#Podemos calcular estas medidas para nuestras reglas podadas y añadirselas a la sección 
-#quality para que los valores de las medidas nuevas salgan también cuando inspeccionamos 
-#las reglas:
-quality(rulesPruned) <- cbind(quality(rulesPruned), mInteres)
-inspect(head(sort(rulesPruned, by="phi")))
+#Análisis por grupos
+sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
+inspect((sortCopRulesPruned[size(sortCopRulesPruned)==2])[1:15])
+#Voy a analizar la 13 al tener un soporte del 0.16 y una confianza del 0.94
+#Esta regla es que si no es vertebrado, no tiene cola
+rulesNoBackbone <- subset(rules, subset = lhs %in% "backbone=FALSE" & lift > 1.2)
+rulesNoBackbone
+#Tenemos un total de 7208 reglas con este consecuente
+#size(rulesNoBackbone)
+sortRulesNoBackbone <- (sort(rulesNoBackbone,by ="confidence"))
+#Buscamos que tenga cola
+consecuenteTengaCola <- subset(rulesNoBackbone,subset = rhs %in% "tail=TRUE" )
+consecuenteTengaCola
+#Nos han quedado 0 reglas, por lo que esto no pasará nunca
 
-library(arulesViz)
-#Utilizar la función plot para representar las reglas en función de las medidas de calidad
-plot(rulesPruned)
-#Podemos modificar el tipo de gráfico generado cambiando el parámetro método de la función 
-#plot
-plot(rulesPruned[1:6], method="graph", control=list(type="items"))
-#Podemos visualizar las reglas como una matriz agrupada. Los antecedentes en las columnas son 
-#agrupados usando clustering. En modo interactivo podemos hacer zoom del nodo que queramos 
-#estudiar y acceder a las reglas que lo componen para inspeccionarlas.
-
-#try: plot(rulesPruned, method="grouped", interactive=TRUE)
-
-#Vamos a analizar algunas reglas
-inspect((sort(rulesPruned, by="support"))[1:20])
-##ELIMINAMOS LA PRIMERA REGLA POR EJEMPLO??
-
-
+sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
+inspect((sortCopRulesPruned[size(sortCopRulesPruned)==2])[1:15])
+#Voy a analizar la 11 al tener un soporte del 0.12 y una confianza del 0.61
+#Esta regla es que no respira, entonces tiene aletas
+rulesNoBreathes <- subset(rules, subset = lhs %in% "breathes=FALSE" & lift > 1.2) 
+rulesNoBreathes
+#Tenemos un total de 87396 reglas con este consecuente
+#size(rulesNoBackbone)
+sortRulesNoBreathes <- (sort(rulesNoBreathes,by ="confidence"))
+#Buscamos que no tenga aletas
+consecuenteNoAletas <- subset(rulesNoBreathes,subset = rhs %in% "fins=FALSE" )
+consecuenteNoAletas
+#Nos han quedado 0 reglas, por lo que esto no pasará nunca
 
 ###############################
 ####### PAQUETE RKEEL #########
@@ -280,7 +248,11 @@ mopnar_zoo$sortBy("confidence")
 #Mostramos las reglas
 rulesZoo <- mopnar_zoo$showRules()
 
-rulesZoo[1:10,]
+rulesZoo[1:9,]
+#Donde podemos ver reglas que estas 9 primeras reglas, pasan de tener un soporte
+#en el antecedente de entre 0.13 a 0.81 a tener confianza 1, por lo que serán
+#buenas reglas, aunque habrá algunas triviales. 
+
 #Si no es pájaro, no tiene plumas, por lo que vamos a ver los pájaros sin plumas
 vector.pajaro.sin.plumas <- (Zoo[["type"]]=="bird" & Zoo[["feathers"]]=="FALSE")
 valores.pajaro.sin.plumas <- (Zoo[vector.pajaro.sin.plumas,])
