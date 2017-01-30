@@ -1,10 +1,22 @@
-##DUDAS
-# -En la primera parte hago bien el análisis de las reglas?
-# -En la segunda vez debería eliminar reglas? como?
-# -En MOPNAR hago bien el análisis de las reglas?
-# -¿Cómo se haría el análisis de reglas en grupos?
+---
+title: "Reglas"
+author: "Pollo"
+date: "29/1/2017"
+output: pdf_document
+---
 
-setwd("~/Dropbox/zMaster/zRStudio/Master-en-Ciencia-De-Datos-e-Ingeniería-de-Computadores/2 Mineria de datos, Aprendizaje no supervisado y deteccion de anomalias/Reglas de asociacion")
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+
+```{r reglas2, echo=FALSE}
 library(arules)
 library(mlbench)
 #Cargamos la BD en nuestra zona de trabajo
@@ -122,151 +134,248 @@ plot(rulesPruned)
 #Podemos modificar el tipo de gráfico generado cambiando el parámetro método de la función 
 #plot
 plot(rulesPruned[1:6], method="graph", control=list(type="items"))
-#Podemos visualizar las reglas como una matriz agrupada. Los antecedentes en las columnas son 
-#agrupados usando clustering. En modo interactivo podemos hacer zoom del nodo que queramos 
-#estudiar y acceder a las reglas que lo componen para inspeccionarlas.
-#try: plot(rulesPruned, method="grouped", interactive=TRUE)
 
-####################################
-######## ANÁLISIS DE REGLAS ########
-####################################
+```
 
-#Vamos a analizar algunas reglas por soporte
+
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+#a
+
+a
+
+##Vamos a analizar algunas reglas por soporte
+```{r reglas}
 inspect((sort(copRulesPruned, by="support"))[1:10])
-#Vemos como esta regla, la 1, tiene un lift menor que 1, por lo que no se espera que sea de utilidad
-#Veamos la confianza del consecuente, no es venenoso
+```
+
+Vemos como esta regla, la 1, tiene un lift menor que 1, por lo que no se espera que sea de utilidad
+Veamos la confianza del consecuente, no es venenoso
+```{r }
 inspect(iZoo[size(iZoo)==1])
-#Por lo que vamos a compararlas:
+```
+
+Por lo que vamos a compararlas:
+```{r }
 inspect((sort(copRulesPruned, by="support"))[1])
 inspect(iZoo[size(iZoo)==1][1])
-#Vemos como la confianza de la regla y el soporte del consecuente son iguales, y al tener el lift
-#menor que 1, tenemos una regla que no nos aporta nada
+```
+
+Vemos como la confianza de la regla y el soporte del consecuente son iguales, y al tener el lift
+menor que 1, tenemos una regla que no nos aporta nada
 
 #Seguimos analizando, ordenando por lift
+```{r }
 inspect((sort(copRulesPruned, by="lift"))[1:10])
-#La regla 9 puede ser interesante, analicemos su consecuente
+```
+
+La regla 9 puede ser interesante, analicemos su consecuente
+```{r }
 inspect(iZoo[size(iZoo)==1])
-#Las comparamos:
+```
+
+Las comparamos:
+```{r }
 inspect((sort(copRulesPruned, by="lift"))[9])
 inspect(iZoo[size(iZoo)==1][12])
-#Tenemos un lift alto, un soporte del 0.59, y pasamos a una confianza del 0.98, por lo que 
-#esta regla sería interesante. por lo que si pone huevos, no pone leche
-#Veamos que animales podrían ser estos:
+```
+
+Tenemos un lift alto, un soporte del 0.59, y pasamos a una confianza del 0.98, por lo que 
+esta regla sería interesante. por lo que si pone huevos, no pone leche
+Veamos que animales podrían ser estos:
+```{r }
 vector.pone.huevos.no.da.leche <- (Zoo[["eggs"]]==TRUE & Zoo[["milk"]]==FALSE)
 valores.pone.huevos.no.da.leche <- (Zoo[vector.pone.huevos.no.da.leche,])
 dim(valores.pone.huevos.no.da.leche)
 head(valores.pone.huevos.no.da.leche)
-#Donde tenemos 58 animales que cumplen estas condiciones, como puede ser el pollo
+```
+
+Donde tenemos 58 animales que cumplen estas condiciones, como puede ser el pollo
 
 #Seguimos analizando, ordenando por confidence
+```{r }
 inspect((sort(copRulesPruned, by="confidence"))[1:10])
-#Las 5 primeras reglas pueden ser interesantes, analicemos su consecuente
+```
+
+Las 5 primeras reglas pueden ser interesantes, analicemos su consecuente
+```{r }
 inspect(iZoo[size(iZoo)==1])
-#Las comparamos:
+```
+
+Las comparamos:
+```{r }
 inspect((sort(copRulesPruned, by="lift"))[1:5])
 inspect(iZoo[size(iZoo)==1][c(22,14,13,12)])
-#Tenemos un lift alto, un soporte entre el 0.40 y 0.59, y pasamos a una confianza del 0.97 y 1, por lo que 
-#estas reglas serían interesantes. 
+```
+
+Tenemos un lift alto, un soporte entre el 0.40 y 0.59, y pasamos a una confianza del 0.97 y 1, por lo que 
+estas reglas serían interesantes. 
 
 #Analicemos las reglas en grupos 
+Ahora mismo se están analizando reglas, cuando se han sacado con apriori con un umbral de soporte del 0.4 y confianza del 0.8 
+```{r }
 inspect((sort(copRulesPruned, by="lift"))[1:10])
-#La 9 sería que pone huevos y no da leche, puede ser interante
+```
+
+La 9 sería que pone huevos y no da leche, puede ser interante
+```{r }
 rulesPoneHuevos <- subset(rules, subset = lhs %in% "eggs=TRUE" & lift > 1.2) 
 rulesPoneHuevos
-#Tenemos un total de 31 reglas con este consecuente
+```
+
+Tenemos un total de 31 reglas con este antecedente
+```{r }
 size(rulesPoneHuevos)
 sortRulesPoneHuevos <- (sort(rulesPoneHuevos,by ="confidence"))
-#Buscamos que de leche
+```
+
+Buscamos que de leche
+```{r }
 consecuenteDaLeche <- subset(rulesPoneHuevos,subset = rhs %in% "milk=TRUE" )
 consecuenteDaLeche
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
+```
+
+Nos han quedado 0 reglas, por lo que esto no pasará nunca
 
 #Analicemos las reglas en grupos 
+```{r }
 sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
 inspect(head(sortCopRulesPruned[size(sortCopRulesPruned)==2]))
-#Voy a analizar la 6 al tener un soporte del 0.47 y una confianza del 0.84
-#Esta regla es que si no tiene catsize, no da leche
+```
+
+Voy a analizar la 6 al tener un soporte del 0.47 y una confianza del 0.84
+Esta regla es que si no tiene catsize, no da leche
+```{r }
 rulesNoCatsize <- subset(rules, subset = lhs %in% "catsize=FALSE" & lift > 1.2) 
 rulesNoCatsize
-#Tenemos un total de 21 reglas con este consecuente
+```
+
+Tenemos un total de 21 reglas con este consecuente
+```{r }
 size(rulesNoCatsize)
 sortRulesNoCatsize <- (sort(rulesNoCatsize,by ="confidence"))
-#Buscamos que de leche
+```
+
+Buscamos que de leche
+```{r }
 consecuenteDaLeche <- subset(rulesNoCatsize,subset = rhs %in% "milk=TRUE" )
 consecuenteDaLeche
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
+```
 
+Nos han quedado 0 reglas, por lo que esto no pasará nunca
+
+##Cambio los umbrales de apriori
+Ahora tengo soporte 0.1 y confianza 0.1
+```{r }
 set.seed(1234)
-#Usamos apriori para extraer las reglas con mínimo soporte 0.1 y confianza 0.1
-#con una longitud minima de 2, para encontrar más reglas y poder sacar alguna
-#conclusión de un análisis por grupos
+```
+
+Usamos apriori para extraer las reglas con mínimo soporte 0.1 y confianza 0.1
+con una longitud minima de 2, para encontrar más reglas y poder sacar alguna
+conclusión de un análisis por grupos
+```{r }
 rules <- apriori(ZooTrans, parameter = list(support = 0.1, confidence = 0.1, minlen = 2))
-#Podemos ordenar las reglas por el campo que más nos interese
+```
+
+Podemos ordenar las reglas por el campo que más nos interese
+```{r }
 rulesSorted = sort(rules, by="confidence")
 copRulesPruned <- rulesSorted
+```
+
 
 #Análisis por grupos
+```{r }
 sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
 inspect((sortCopRulesPruned[size(sortCopRulesPruned)==2])[1:15])
-#Voy a analizar la 13 al tener un soporte del 0.16 y una confianza del 0.94
-#Esta regla es que si no es vertebrado, no tiene cola
+```
+
+Voy a analizar la 13 al tener un soporte del 0.16 y una confianza del 0.94
+Esta regla es que si no es vertebrado, no tiene cola
+```{r }
 rulesNoBackbone <- subset(rules, subset = lhs %in% "backbone=FALSE" & lift > 1.2)
 rulesNoBackbone
-#Tenemos un total de 7208 reglas con este consecuente
+```
+
+Tenemos un total de 7208 reglas con este antecedente
+```{r }
 sortRulesNoBackbone <- (sort(rulesNoBackbone,by ="confidence"))
-#Buscamos que tenga cola
+```
+
+Buscamos que tenga cola
+```{r }
 consecuenteTengaCola <- subset(rulesNoBackbone,subset = rhs %in% "tail=TRUE" )
 consecuenteTengaCola
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
+```
 
+Nos han quedado 0 reglas, por lo que esto no pasará nunca
+
+#Otro análisis
+```{r }
 sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
 inspect((sortCopRulesPruned[size(sortCopRulesPruned)==2])[1:15])
-#Voy a analizar la 11 al tener un soporte del 0.12 y una confianza del 0.61
-#Esta regla es que no respira, entonces tiene aletas
+```
+
+Voy a analizar la 11 al tener un soporte del 0.12 y una confianza del 0.61
+Esta regla es que no respira, entonces tiene aletas
+```{r }
 rulesNoBreathes <- subset(rules, subset = lhs %in% "breathes=FALSE" & lift > 1.2) 
 rulesNoBreathes
-#Tenemos un total de 87396 reglas con este consecuente
+```
+
+Tenemos un total de 87396 reglas con este antecedente
+```{r }
 sortRulesNoBreathes <- (sort(rulesNoBreathes,by ="confidence"))
-#Buscamos que no tenga aletas
+```
+
+Buscamos que no tenga aletas
+```{r }
 consecuenteNoAletas <- subset(rulesNoBreathes,subset = rhs %in% "fins=FALSE" )
 consecuenteNoAletas
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
+```
 
+Nos han quedado 0 reglas, por lo que esto no pasará nunca
 
+#Otro análisis
+```{r }
 sortCopRulesPruned <- (sort(copRulesPruned, by="support"))
 inspect((sortCopRulesPruned[size(sortCopRulesPruned)==2])[1:15])
-#Voy a analizar la 3 al tener un soporte del 0.78 y una confianza del 0.95
-#Esta regla es que vertebradno, no venenoso
+```
+
+Voy a analizar la 3 al tener un soporte del 0.78 y una confianza del 0.95
+Esta regla es que vertebradno, no venenoso
+```{r }
 rulesVertebrado <- subset(rules, subset = lhs %in% "backbone=TRUE" & lift > 1.2) 
 rulesVertebrado
-#Tenemos un total de 557577 reglas con este consecuente
+```
+
+Tenemos un total de 557577 reglas con este antecedente
+```{r }
 sortRulesVertebrado <- (sort(rulesVertebrado,by ="confidence"))
-#Buscamos que sea venenoso
+```
+
+Buscamos que sea venenoso
+```{r }
 consecuenteVenenoso <- subset(rulesVertebrado,subset = rhs %in% "venomous=TRUE" )
 consecuenteVenenoso
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
+```
 
-###############################
-####### PAQUETE RKEEL #########
-###############################
-library(RKEEL)
-#Creamos MOPNAR para el dataset Zoo
-data(Zoo)
-mopnar_zoo <- MOPNAR_A(Zoo)
-#Ejecutamos MOPNAR
-mopnar_zoo$run()
-#Ordenamos la salida por confianza
-mopnar_zoo$sortBy("confidence")
-#Mostramos las reglas
-rulesZoo <- mopnar_zoo$showRules()
-
-rulesZoo[1:9,]
-#Donde podemos ver reglas que estas 9 primeras reglas, pasan de tener un soporte
-#en el antecedente de entre 0.13 a 0.81 a tener confianza 1, por lo que serán
-#buenas reglas, aunque habrá algunas triviales. 
-
-#Si no es pájaro, no tiene plumas, por lo que vamos a ver los pájaros sin plumas
-vector.pajaro.sin.plumas <- (Zoo[["type"]]=="bird" & Zoo[["feathers"]]=="FALSE")
-valores.pajaro.sin.plumas <- (Zoo[vector.pajaro.sin.plumas,])
-valores.pajaro.sin.plumas
-#Por lo que podemos ver que no hay ninguno
+Nos han quedado 0 reglas, por lo que esto no pasará nunca
