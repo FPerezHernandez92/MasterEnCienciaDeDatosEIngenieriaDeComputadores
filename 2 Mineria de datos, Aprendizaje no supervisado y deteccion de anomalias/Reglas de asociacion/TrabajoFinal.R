@@ -314,129 +314,6 @@ rules1[1726:1727,]
 
 
 
-#Lo primero, vamos a realizar de nuevo apriori, pero cambiando los parámetros:
-rules <- apriori(ZooTrans, parameter = list(support = 0.1, confidence = 0.1, minlen = 2, maxlen=3))
-#De forma que queremos reglas que tengan longitud de 2 o 3, con un soporte del 0.4 y confianza del 0.6
-#Nos quedamos con las reglas que tengan un lift de más del 1.2
-rulesLiftAlto <- subset(rules, lift > 1.2)
-rulesConfianzaBaja <- subset(rulesLiftAlto, confidence < 0.6)
-sortRules <- (sort(rulesConfianzaBaja, by ="confidence"))
-#Eliminamos las reglas redundantes 
-subsetMatrix <- is.subset(sortRules, sortRules)
-subsetMatrix[lower.tri(subsetMatrix, diag=T)] <- NA
-redundant <- colSums(subsetMatrix, na.rm=T) >= 1
-rulesPruned <- sortRules[!redundant] # remove redundant rules 
-#Vemos las primeras reglas ya "arregladas", con tamaño 2 para comenzar el análisis
-inspect(head(rulesPruned[size(rulesPruned)==2]))
-
-#De esta forma voy a analizar la regla 1:
-consecuentePositivo <- subset(rulesPruned,subset = rhs %in% "predator=FALSE")
-inspect(consecuentePositivo[size(consecuentePositivo)==2])
-#Voy a buscar reglas que tenga el consecuente de esta regla negado:
-consecuenteNegado <- subset(rulesPruned,subset = rhs %in% "predator=TRUE" )
-inspect(consecuenteNegado)
-#Como no hay ninguna, analizo la regla 2: 
-aaa <- inspect(head(rulesPruned[size(rulesPruned)==2]))
-aaa[4,3]
-consecuentePositivo <- subset(rulesPruned,subset = rhs %in% "catsize=TRUE")
-inspect(consecuentePositivo[size(consecuentePositivo)==2])
-#Voy a buscar reglas que tenga el consecuente de esta regla negado:
-consecuenteNegado <- subset(rulesPruned,subset = rhs %in% "catsize=FALSE" )
-
-
-
-
-
-inspect(consecuenteNegado)
-inspect(consecuentePositivo[size(consecuentePositivo)==2])
-consecuenteNegadoYRegla1 <- subset(consecuenteNegado, subset = lhs %in% "type=fish")
-inspect(consecuenteNegadoYRegla1)
-consecuenteNegadoYRegla2 <- subset(consecuenteNegado, subset = lhs %in% "breathes=FALSE")
-inspect(consecuenteNegadoYRegla2)
-consecuenteNegadoYRegla3 <- subset(consecuenteNegado, subset = lhs %in% "hair=FALSE")
-inspect(consecuenteNegadoYRegla3)
-
-
-
-
-######################ANTIGUOOOOOOO
-inspect((sort(copRulesPruned, by="lift"))[1:10])
-#La 9 sería que pone huevos y no da leche, puede ser interante
-rulesPoneHuevos <- subset(rules, subset = lhs %in% "eggs=TRUE" & lift > 1.2) 
-rulesPoneHuevos
-#Tenemos un total de 31 reglas con este consecuente
-size(rulesPoneHuevos)
-sortRulesPoneHuevos <- (sort(rulesPoneHuevos,by ="confidence"))
-#Buscamos que de leche
-consecuenteDaLeche <- subset(rulesPoneHuevos,subset = rhs %in% "milk=TRUE" )
-consecuenteDaLeche
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
-
-#Analicemos las reglas en grupos 
-sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
-inspect(head(sortCopRulesPruned[size(sortCopRulesPruned)==2]))
-#Voy a analizar la 6 al tener un soporte del 0.47 y una confianza del 0.84
-#Esta regla es que si no tiene catsize, no da leche
-rulesNoCatsize <- subset(rules, subset = lhs %in% "catsize=FALSE" & lift > 1.2) 
-rulesNoCatsize
-#Tenemos un total de 21 reglas con este consecuente
-size(rulesNoCatsize)
-sortRulesNoCatsize <- (sort(rulesNoCatsize,by ="confidence"))
-#Buscamos que de leche
-consecuenteDaLeche <- subset(rulesNoCatsize,subset = rhs %in% "milk=TRUE" )
-consecuenteDaLeche
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
-
-set.seed(1234)
-#Usamos apriori para extraer las reglas con mínimo soporte 0.1 y confianza 0.1
-#con una longitud minima de 2, para encontrar más reglas y poder sacar alguna
-#conclusión de un análisis por grupos
-rules <- apriori(ZooTrans, parameter = list(support = 0.1, confidence = 0.1, minlen = 2))
-#Podemos ordenar las reglas por el campo que más nos interese
-rulesSorted = sort(rules, by="confidence")
-copRulesPruned <- rulesSorted
-
-#Análisis por grupos
-sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
-inspect((sortCopRulesPruned[size(sortCopRulesPruned)==2])[1:15])
-#Voy a analizar la 13 al tener un soporte del 0.16 y una confianza del 0.94
-#Esta regla es que si no es vertebrado, no tiene cola
-rulesNoBackbone <- subset(rules, subset = lhs %in% "backbone=FALSE" & lift > 1.2)
-rulesNoBackbone
-#Tenemos un total de 7208 reglas con este consecuente
-sortRulesNoBackbone <- (sort(rulesNoBackbone,by ="confidence"))
-#Buscamos que tenga cola
-consecuenteTengaCola <- subset(rulesNoBackbone,subset = rhs %in% "tail=TRUE" )
-consecuenteTengaCola
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
-
-sortCopRulesPruned <- (sort(copRulesPruned, by="lift"))
-inspect((sortCopRulesPruned[size(sortCopRulesPruned)==2])[1:15])
-#Voy a analizar la 11 al tener un soporte del 0.12 y una confianza del 0.61
-#Esta regla es que no respira, entonces tiene aletas
-rulesNoBreathes <- subset(rules, subset = lhs %in% "breathes=FALSE" & lift > 1.2) 
-rulesNoBreathes
-#Tenemos un total de 87396 reglas con este consecuente
-sortRulesNoBreathes <- (sort(rulesNoBreathes,by ="confidence"))
-#Buscamos que no tenga aletas
-consecuenteNoAletas <- subset(rulesNoBreathes,subset = rhs %in% "fins=FALSE" )
-consecuenteNoAletas
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
-
-
-sortCopRulesPruned <- (sort(copRulesPruned, by="support"))
-inspect((sortCopRulesPruned[size(sortCopRulesPruned)==2])[1:15])
-#Voy a analizar la 3 al tener un soporte del 0.78 y una confianza del 0.95
-#Esta regla es que vertebradno, no venenoso
-rulesVertebrado <- subset(rules, subset = lhs %in% "backbone=TRUE" & lift > 1.2) 
-rulesVertebrado
-#Tenemos un total de 557577 reglas con este consecuente
-sortRulesVertebrado <- (sort(rulesVertebrado,by ="confidence"))
-#Buscamos que sea venenoso
-consecuenteVenenoso <- subset(rulesVertebrado,subset = rhs %in% "venomous=TRUE" )
-consecuenteVenenoso
-#Nos han quedado 0 reglas, por lo que esto no pasará nunca
-
 ###############################
 ####### PAQUETE RKEEL #########
 ###############################
@@ -451,13 +328,8 @@ mopnar_zoo$sortBy("confidence")
 #Mostramos las reglas
 rulesZoo <- mopnar_zoo$showRules()
 
-rulesZoo[1:9,]
+rulesZoo[1:9,c(1,2,3,5,7,8,9)]
 #Donde podemos ver reglas que estas 9 primeras reglas, pasan de tener un soporte
-#en el antecedente de entre 0.13 a 0.81 a tener confianza 1, por lo que serán
+#en el consecuente de entre 0.17 a 0.88 a tener confianza 1, por lo que serán
 #buenas reglas, aunque habrá algunas triviales. 
 
-#Si no es pájaro, no tiene plumas, por lo que vamos a ver los pájaros sin plumas
-vector.pajaro.sin.plumas <- (Zoo[["type"]]=="bird" & Zoo[["feathers"]]=="FALSE")
-valores.pajaro.sin.plumas <- (Zoo[vector.pajaro.sin.plumas,])
-valores.pajaro.sin.plumas
-#Por lo que podemos ver que no hay ninguno
