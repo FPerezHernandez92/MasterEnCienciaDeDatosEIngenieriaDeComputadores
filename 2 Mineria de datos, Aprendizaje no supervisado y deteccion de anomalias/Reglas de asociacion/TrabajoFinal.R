@@ -1,9 +1,4 @@
-##DUDAS
-# -En la primera parte hago bien el análisis de las reglas?
-# -En la segunda vez debería eliminar reglas? como?
-# -En MOPNAR hago bien el análisis de las reglas?
-# -¿Cómo se haría el análisis de reglas en grupos?
-
+#Francisco Pérez Hernández
 setwd("~/Dropbox/zMaster/zRStudio/Master-en-Ciencia-De-Datos-e-Ingeniería-de-Computadores/2 Mineria de datos, Aprendizaje no supervisado y deteccion de anomalias/Reglas de asociacion")
 library(arules)
 library(mlbench)
@@ -169,31 +164,36 @@ inspect(iZoo[size(iZoo)==1][c(22,14,13,12)])
 #Tenemos un lift alto, un soporte en el consecuente de entre el 0.40 y 0.59, y pasamos a una confianza en la regla del 0.97 y 1, por lo que 
 #estas reglas serán interesantes. 
 
+
+
 ##############################################
 ######## ANÁLISIS DE REGLAS EN GRUPOS ########
 ##############################################
-#Lo primero, vamos a realizar de nuevo apriori, pero cambiando los parámetros:
-rules <- apriori(ZooTrans, parameter = list(support = 0.4, confidence = 0.6, minlen = 2, maxlen=3))
-#De forma que queremos reglas que tengan longitud de 2 o 3, con un soporte del 0.4 y confianza del 0.6
-#Ordenamos las reglas por lift
-sortRules <- (sort(rules,by ="lift"))
-#Eliminamos las reglas redundantes 
-subsetMatrix <- is.subset(sortRules, sortRules)
-subsetMatrix[lower.tri(subsetMatrix, diag=T)] <- NA
-redundant <- colSums(subsetMatrix, na.rm=T) >= 1
-rulesPruned <- sortRules[!redundant] # remove redundant rules 
-#Vemos las primeras reglas ya "arregladas", con tamaño 2 para comenzar el análisis
-inspect(head(rulesPruned[size(rulesPruned)==2]))
-#De esta forma voy a analizar la regla 2:
-consecuentePositivo <- subset(rulesPruned,subset = rhs %in% "milk=FALSE")
-inspect(consecuentePositivo)
-inspect(head(rulesPruned[size(rulesPruned)==2])[2])
-#Voy a buscar reglas que tenga el consecuente de esta regla negado:
-consecuenteNegado <- subset(rulesPruned,subset = rhs %in% "milk=TRUE" )
-inspect(consecuenteNegado)
+data(Zoo)
+#Convertimos las variables booleanas a factor
+Zoo[["hair"]] = as.factor(Zoo[["hair"]])
+Zoo[["feathers"]] = as.factor(Zoo[["feathers"]])
+Zoo[["eggs"]] = as.factor(Zoo[["eggs"]])
+Zoo[["milk"]] = as.factor(Zoo[["milk"]])
+Zoo[["airborne"]] = as.factor(Zoo[["airborne"]])
+Zoo[["aquatic"]] = as.factor(Zoo[["aquatic"]])
+Zoo[["predator"]] = as.factor(Zoo[["predator"]])
+Zoo[["toothed"]] = as.factor(Zoo[["toothed"]])
+Zoo[["backbone"]] = as.factor(Zoo[["backbone"]])
+Zoo[["breathes"]] = as.factor(Zoo[["breathes"]])
+Zoo[["venomous"]] = as.factor(Zoo[["venomous"]])
+Zoo[["fins"]] = as.factor(Zoo[["fins"]])
+Zoo[["tail"]] = as.factor(Zoo[["tail"]])
+Zoo[["domestic"]] = as.factor(Zoo[["domestic"]])
+Zoo[["catsize"]] = as.factor(Zoo[["catsize"]])
+#De el único atributo continuo lo dividimos en intervalos
+Zoo[[ "legs"]] = ordered( cut ( Zoo[[ "legs"]], c(-Inf,0,Inf) ) ,
+                          labels = c ("FALSE", "TRUE"))
+#Convertimos el data.frame en un conjunto de transacciones con la función as
+ZooTrans <- as(Zoo,"transactions")
 
-
 #Lo primero, vamos a realizar de nuevo apriori, pero cambiando los parámetros:
+iZoo <- apriori(ZooTrans, parameter = list(support = 0.1, target="frequent", maxlen=2))
 rules <- apriori(ZooTrans, parameter = list(support = 0.1, confidence = 0.1, minlen = 2, maxlen=3))
 #De forma que queremos reglas que tengan longitud de 2 o 3, con un soporte del 0.4 y confianza del 0.6
 #Ordenamos las reglas por lift
@@ -208,7 +208,7 @@ inspect(head(rulesPruned[size(rulesPruned)==2]))
 #De esta forma voy a analizar la regla 1:
 consecuentePositivo <- subset(rulesPruned,subset = rhs %in% "fins=TRUE")
 inspect(consecuentePositivo[size(consecuentePositivo)==2])
-#inspect(head(rulesPruned[size(rulesPruned)==2])[2])
+inspect(iZoo[size(iZoo)==1][3])
 #Voy a buscar reglas que tenga el consecuente de esta regla negado:
 consecuenteNegado <- subset(rulesPruned,subset = rhs %in% "fins=FALSE" )
 inspect(consecuenteNegado)
@@ -218,63 +218,99 @@ inspect(consecuenteNegadoYRegla1)
 consecuenteNegadoYRegla2 <- subset(consecuenteNegado, subset = lhs %in% "breathes=FALSE")
 inspect(consecuenteNegadoYRegla2)
 consecuenteNegadoYRegla3 <- subset(consecuenteNegado, subset = lhs %in% "hair=FALSE")
-inspect(consecuenteNegadoYRegla3)
+inspect(consecuenteNegadoYRegla3[size(consecuenteNegadoYRegla3)==3])
+inspect(iZoo[size(iZoo)==1][32])
 
-###función
-misrules=NULL
+###FUNCIÓN CREADA
+MiMetodo = function(fsoporte,fconfianza,fminlen,fmaxlen,limitelif,limiteconfianza,limitesoporte,tamasize){
+  #Inicializamos la variable de salida
+  misrules=NULL
+  #Realizamos a priori
+  rules <- apriori(ZooTrans, parameter = list(support = fsoporte, confidence = fconfianza, minlen = fminlen, maxlen=fmaxlen))
+  #Si queremos eliminar reglas por los valores de lift, confianza o soporte se podan
+  rulesLimiteLift <- subset(rules, lift > limitelif)
+  rulesLimiteConfianza <- subset(rulesLimiteLift, confidence <= limiteconfianza)
+  rulesLimiteSoporte <- subset(rulesLimiteConfianza, support < limitesoporte)
+  #Eliminamos las reglas redundantes
+  sortRules <- sort(rulesLimiteSoporte, by = "lift")
+  subsetMatrix <- is.subset(sortRules, sortRules)
+  subsetMatrix[lower.tri(subsetMatrix, diag=T)] <- NA
+  redundant <- colSums(subsetMatrix, na.rm=T) >= 1
+  rulesPruned <- sortRules[!redundant]
+  #Realizamos el inspect en función del tamaño deseado
+  salidaInspect <- inspect((rulesPruned[size(rulesPruned)==tamasize]))
+  numeroReglas <- dim(salidaInspect)[1]
+  #Divido la salida del inspect en reglas con type en el consecuente y reglas sin type:
+  #Nota: las reglas con type, no las he analizado, realizaría otra función
+  salidaInspectType=NULL;salidaInspectNoType=NULL
+  for (i in 1:(dim(salidaInspect)[1])){
+    Cconsecuente <- salidaInspect[i,3];Cconsecuente <- as.character(Cconsecuente);tamachar <- nchar(Cconsecuente) -1;
+    Cconsecuente <- substr(Cconsecuente,start=2,stop=5)
+    if (Cconsecuente=="type"){
+      salidaInspectType = rbind(salidaInspectType,salidaInspect[i,])
+    } else {
+      salidaInspectNoType = rbind(salidaInspectNoType,salidaInspect[i,])
+    }
+  }
+  #Me quedo con las reglas que no tienen type en el consecuente
+  salidaInspect <- salidaInspectNoType
+  tamaRecortado <- dim(salidaInspect)[1]
+  for (h in 1:tamaRecortado){
+    #Sacar consecuente
+    Cconsecuente <- salidaInspect[h,3];Cconsecuente <- as.character(Cconsecuente);tamachar <- nchar(Cconsecuente) -1;
+    Cconsecuente <- substr(Cconsecuente,start=2,stop=tamachar)
+    consecuentePositivo <- subset(rulesPruned, subset = rhs %in% Cconsecuente)
+    tamaconse <- nchar(Cconsecuente)
+    #Niego el consecuente
+    CconsecuenteNegado=NULL
+    if ((substr(Cconsecuente,start=(tamaconse-4),stop = tamaconse))==FALSE){
+      CconsecuenteNegado <- substr(Cconsecuente,start=1,stop=(tamaconse-5))
+      CconsecuenteNegado <- paste(CconsecuenteNegado,"TRUE",sep = "")
+    } else if ((substr(Cconsecuente,start=(tamaconse-3),stop = tamaconse))==TRUE){
+      CconsecuenteNegado <- substr(Cconsecuente,start=1,stop=(tamaconse-4))
+      CconsecuenteNegado <- paste(CconsecuenteNegado,"FALSE",sep = "")
+    }
+    consecuenteNegado <- subset(rulesPruned,subset = rhs %in% CconsecuenteNegado )
+    print("Número de reglas con consecuente negado");length(consecuenteNegado)
+    inspect(consecuenteNegado)
+    inspectPositivas <- inspect(consecuentePositivo[size(consecuentePositivo)==2])
+    
+    #Busco reglas con el consecuente negado y que tengan el antecedente de las reglas con consecuente positivo
+    for ( j in 1:((dim(inspectPositivas)[1]))){
+      misrulesNuevas=NULL
+      Cantecedente <- inspectPositivas[j,1];Cantecedente <- as.character(Cantecedente);tamachar <- nchar(Cantecedente) -1;
+      Cantecedente <- substr(Cantecedente,start=2,stop=tamachar)
+      consecuenteNegadoYRegla <- subset(consecuenteNegado, subset = lhs %in% Cantecedente)
+      misrulesNuevas = inspect(consecuenteNegadoYRegla[size(consecuenteNegadoYRegla)>2])
+      misrulesNuevas = rbind(misrulesNuevas,misrulesNuevas)
+      if(is.null(misrulesNuevas)){
+        
+      } else if ((dim(misrulesNuevas)[1])>0){
+        misrules = rbind(misrules,inspectPositivas[j,])
+        misrules = rbind(misrules,misrulesNuevas)
+      }
+    }
+    if (is.null(misrules)){
+      
+    } else {
+      #Elimino las reglas con lift menor de 1.2
+      for (g in (dim(misrules)[1]):1){
+        if (misrules[g,6]<1.2){
+          misrules = misrules[-g,]
+        }
+      }
+    }
+  }
+  return(misrules)
+}
+
+#Doy valores a los parámetros y ejecuto: NOTA: LA EJECUCIÓN PUEDE TARDAR VARIOS MINÚTOS
 fsoporte = 0.1;fconfianza = 0.1;fminlen = 2;fmaxlen = 3;limitelif = 0;limiteconfianza=1;limitesoporte=1;tamasize=2
-rules <- apriori(ZooTrans, parameter = list(support = fsoporte, confidence = fconfianza, minlen = fminlen, maxlen=fmaxlen))
-rulesLimiteLift <- subset(rules, lift > limitelif)
-rulesLimiteConfianza <- subset(rulesLimiteLift, confidence <= limiteconfianza)
-rulesLimiteSoporte <- subset(rulesLimiteConfianza, support < limitesoporte)
-sortRules <- sort(rulesLimiteSoporte, by = "lift")
-subsetMatrix <- is.subset(sortRules, sortRules)
-subsetMatrix[lower.tri(subsetMatrix, diag=T)] <- NA
-redundant <- colSums(subsetMatrix, na.rm=T) >= 1
-rulesPruned <- sortRules[!redundant]
-salidaInspect <- inspect((rulesPruned[size(rulesPruned)==tamasize]))
-numeroReglas <- dim(salidaInspect)[1]
-print("Número de reglas actuales");numeroReglas
-#
-salidaInspect <- inspect((rulesPruned[size(rulesPruned)==tamasize])[1:10])
-salidaInspect <- salidaInspect[-10,]
-salidaInspect <- salidaInspect[-5,]
-salidaInspect <- salidaInspect[-4,]
-tamaRecortado <- dim(salidaInspect)[1]
-
-#Sacar consecuente
-Cconsecuente <- salidaInspect[1,3];Cconsecuente <- as.character(Cconsecuente);tamachar <- nchar(Cconsecuente) -1;
-Cconsecuente <- substr(Cconsecuente,start=2,stop=tamachar)
-consecuentePositivo <- subset(rulesPruned, subset = rhs %in% Cconsecuente)
-tamaconse <- nchar(Cconsecuente)
-CconsecuenteNegado=NULL
-if ((substr(Cconsecuente,start=(tamaconse-4),stop = tamaconse))==FALSE){
-  CconsecuenteNegado <- substr(Cconsecuente,start=1,stop=(tamaconse-5))
-  CconsecuenteNegado <- paste(CconsecuenteNegado,"TRUE",sep = "")
-} else if ((substr(Cconsecuente,start=(tamaconse-3),stop = tamaconse))==TRUE){
-  CconsecuenteNegado <- substr(Cconsecuente,start=1,stop=(tamaconse-4))
-  CconsecuenteNegado <- paste(CconsecuenteNegado,"FALSE",sep = "")
-}
-consecuenteNegado <- subset(rulesPruned,subset = rhs %in% CconsecuenteNegado )
-print("Número de reglas con consecuente negado");length(consecuenteNegado)
-inspect(consecuenteNegado)
-inspectPositivas <- inspect(consecuentePositivo[size(consecuentePositivo)==2])
-#Sacar antecedente
-length(inspectPositivas)
-for ( j in 1:((length(inspectPositivas))/2)){
-  Cantecedente <- inspectPositivas[j,1];Cantecedente <- as.character(Cantecedente);tamachar <- nchar(Cantecedente) -1;
-  Cantecedente <- substr(Cantecedente,start=2,stop=tamachar)
-  consecuenteNegadoYRegla <- subset(consecuenteNegado, subset = lhs %in% Cantecedente)
-  misrules = inspect(consecuenteNegadoYRegla[size(consecuenteNegadoYRegla)>2])
-  misrules = rbind(misrules,misrules)
-}
-
-
-
-
-
-
-
+rules1 <- MiMetodo(fsoporte,fconfianza,fminlen,fmaxlen,limitelif,limiteconfianza,limitesoporte,tamasize)
+inspect(iZoo[size(iZoo)==1][c(16,21)])
+rules1[125:127,]
+inspect(iZoo[size(iZoo)==1][c(13,23)])
+rules1[1726:1727,]
 
 
 
