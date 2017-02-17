@@ -6,9 +6,28 @@ library(caret)
 library(mice)
 library(lattice)
 library(randomForest)
+library(party)
+
 #Leemos el data set original
 accidentes.train.original <- read.csv("accidentes-kaggle.csv")
 accidentes.test.original <- read.csv("accidentes-kaggle-test.csv")
+
+#Realizamos 
+
+accidentes.train.solo.numericos <- accidentes.train.original[,c(8,9,10,11,12,30)]
+accidentes.test.solo.numericos <- accidentes.test.original[,c(8,9,10,11,12)]
+set.seed(1234)
+ct <- ctree(TIPO_ACCIDENTE ~., accidentes.train.solo.numericos)
+# se realiza la prediccion
+testPred <- predict(ct, newdata = accidentes.test.solo.numericos)
+
+
+
+
+daaa <- as.matrix(testPred)
+write.table(daaa,file="tt.txt",sep=",",quote = F)
+
+
 
 
 ##### VALORES PERDIDOS
@@ -71,8 +90,8 @@ accidentes.test.modelos <- accidentes.test.sin.columna.na
 #LM
 set.seed(1234)
 ldaFit <- train(train.set,train.set.label,
-                              method="lda",metric="Accuracy",preProcess=c("center","scale"),
-                              tuneLength=10,trControl=trainControl(method="cv",number=10))
+                method="lda",metric="Accuracy",preProcess=c("center","scale"),
+                tuneLength=10,trControl=trainControl(method="cv",number=10))
 summary(ldaFit)
 dim(accidentes.train.modelos)[2]
 train.set <- accidentes.train.modelos[,-(dim(accidentes.train.modelos)[2])]
@@ -106,23 +125,6 @@ plot(modelo2)
 posicionClase <- length(names(accidentes.train.modelos))
 variableClase <- names(accidentes.train.modelos)[posicionClase]
 formulaClase <- as.formula(paste(variableClase,"~.",sep=""))
-library(party)
+
 ct <- ctree(formulaClase, accidentes.train.modelos)
 
-
-
-
-
-accidentes.train.solo.numericos <- accidentes.train.original[,c(8,9,10,11,12,30)]
-accidentes.test.solo.numericos <- accidentes.test.original[,c(8,9,10,11,12)]
-set.seed(1234)
-ct <- ctree(TIPO_ACCIDENTE ~., accidentes.train.solo.numericos)
-# se realiza la prediccion
-testPred <- predict(ct, newdata = accidentes.test.solo.numericos)
-
-
-
-
-daaa <- as.matrix(testPred)
-daad <- matrix(1:length(daaa))
-write.table(daaa,file="tt.txt",sep=",",quote = F)
