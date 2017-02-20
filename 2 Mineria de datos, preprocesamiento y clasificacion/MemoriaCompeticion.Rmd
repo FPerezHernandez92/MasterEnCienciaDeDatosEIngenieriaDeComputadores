@@ -41,7 +41,7 @@ set.seed(1234)
 ct1 <- ctree(TIPO_ACCIDENTE ~., accidentes.train.solo.numericos)
 testPred1 <- predict(ct1, newdata = accidentes.test.solo.numericos)
 ```
-Por lo que ya tenemos el conjunto de test predecido. Además el árbol creado tendría la siguiente estructura:
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
 ```{r }
 ct1
 ```
@@ -112,7 +112,7 @@ set.seed(1234)
 ct2 <- ctree(TIPO_ACCIDENTE ~., accidentes.train.sin.variables.2)
 testPred2 <- predict(ct2, newdata = accidentes.test.sin.variables.2)
 ```
-Por lo que ya tenemos el conjunto de test predecido. Además el árbol creado tendría la siguiente estructura:
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
 ```{r }
 #ct2
 ```
@@ -143,8 +143,8 @@ ggplot(data = accidentes.train.sin.variables.2) + geom_point(mapping = aes(x = T
 ggplot(data = accidentes.train.sin.variables.2) + geom_point(mapping = aes(x = TOT_HERIDOS_LEVES , y = TIPO_ACCIDENTE))
 ggplot(data = accidentes.train.sin.variables.2) + geom_point(mapping = aes(x = TOT_VEHICULOS_IMPLICADOS , y = TIPO_ACCIDENTE))
 ```
-Normalmente a partir de 3 muertos, el accidente es una colisión de vehículos o una salida de via. Si hay más de 3 heridos graves, suele ser colisión de vehículos, salida de via o vuelco. A partir de 6 heridos leves el accidente es una colisión, una salida de via, un vuelco o otro accidente. A partir de 6 vehículos implicados, los accidentes suelen ser colisiones, salida de via u otro tipo. 
-Por lo que ya tenemos varias relaciones que podrían ser representadas en un arbol. 
+Normalmente a partir de 3 muertos, el accidente es una colisión de vehículos o una salida de vía. Si hay más de 3 heridos graves, suele ser colisión de vehículos, salida de vía o vuelco. A partir de 6 heridos leves el accidente es una colisión, una salida de vía, un vuelco o otro accidente. A partir de 6 vehículos implicados, los accidentes suelen ser colisiones, salida de vía u otro tipo. 
+Por lo que ya tenemos varias relaciones que podrían ser representadas en un árbol. 
 
 ```{r}
 ggplot(data = accidentes.train.sin.variables.1) + geom_bar(mapping = aes(x=TIPO_ACCIDENTE, fill=ZONA))
@@ -166,7 +166,7 @@ ggplot(data = valores.sin.buen.tiempo) + geom_bar(mapping = aes(x=TIPO_ACCIDENTE
 Pero seguimos viendo que no se puede sacar ninguna conclusión de esta visualización. 
 
 ## Análisis de variables eliminadas sin valores perdidos
-Recordemos las variables que eliminamos sin tener valores perdidios.
+Recordemos las variables que eliminamos sin tener valores perdidos.
 ```{r}
 segundas.variables.eliminadas
 ```
@@ -210,7 +210,7 @@ basicStats(accidentes.train.sin.variables.2[1])
 Vamos a usar uso del paquete mice para imputar los datos.
 
 ## Imputación de variables
-Veamos que variables teniamos con valores perdidos.
+Veamos que variables teníamos con valores perdidos.
 ```{r}
 summary(accidentes.train.variables.eliminadas)
 ```
@@ -233,7 +233,7 @@ set.seed(1234)
 ct3 <- ctree(TIPO_ACCIDENTE ~., train.imputados)
 testPred3 <- predict(ct3, newdata = test.imputados)
 ```
-Por lo que ya tenemos el conjunto de test predecido. Además el árbol creado tendría la siguiente estructura:
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
 ```{r }
 #ct3
 ```
@@ -247,6 +247,155 @@ write.table(salida.tercer.modelo,file="predicciones/TerceraPrediccion.txt",sep="
 El resultado de este modelo para la competición de Kaggel, subido el 19/02/2017 a las 17:42, con un total de 14 personas entregadas, se ha quedado en la posición 9 con una puntuación del 0.81753. Bajando muy poco con respecto a la anterior puntuación.  
 
 ![Tercera puntuación obtenida en Kaggel](imagenes/TerceraPuntuacion.png "TerceraPuntuacion")
+
+# Detección de anomalias
+Veamos como detectar valores anomalos en nuestros datos.
+
+## Uso del paquete outliers
+Veamos si tenemos valores perdidos en nuestros datos, solo con valores que no son discretas.
+```{r}
+library(outliers)
+valores.anomalos <- outlier(train.imputados[,1:5])
+print(valores.anomalos)
+ggplot(data = train.imputados) + geom_bar(mapping = aes(x=TOT_VICTIMAS))
+ggplot(data = train.imputados) + geom_bar(mapping = aes(x=TOT_MUERTOS))
+ggplot(data = train.imputados) + geom_bar(mapping = aes(x=TOT_HERIDOS_GRAVES))
+ggplot(data = train.imputados) + geom_bar(mapping = aes(x=TOT_HERIDOS_LEVES))
+ggplot(data = train.imputados) + geom_bar(mapping = aes(x=TOT_VEHICULOS_IMPLICADOS))
+```
+Viendo que en cada variable tenemos distintos valores anómalos como sería el valor 19 en TOT_VICTIMAS. 
+
+## Paquete mvoutlier
+Voy a intentar usar el paquete mvoutlier.
+```{r}
+require(mvoutlier)
+resultado.busqueda.anomalias <- uni.plot(train.imputados[1:200,1:2])
+```
+Como se puede ver, se ha obtenido un error el cual no he podido solucionar.
+
+## Eliminación de valores anómalos
+En función de lo obtenido con el paquete otulier, voy a intentar realizar algo con este paquete para ver que tal se comporta nuestro dataset.
+```{r}
+valores.anomalos.train <- outlier(train.imputados[,1:5])
+valores.anomalos.test <- outlier(test.imputados[,1:5])
+print(valores.anomalos.train)
+print(valores.anomalos.test)
+```
+Veamos, por ejemplo, para la variable TOT_VICTIMAS, cuantas instancias cumplen tener mas de 19 victimas o de 10.
+```{r}
+vector.con.victimas.19 <- train.imputados$TOT_VICTIMAS >= 19
+sum(vector.con.victimas.19)
+vector.con.victimas.18 <- train.imputados$TOT_VICTIMAS >= 18
+sum(vector.con.victimas.18)
+vector.con.victimas.17 <- train.imputados$TOT_VICTIMAS >=17
+sum(vector.con.victimas.17)
+vector.con.victimas.10 <- train.imputados$TOT_VICTIMAS >= 10
+sum(vector.con.victimas.10)
+valores.con.victimas.10 <- train.imputados[vector.con.victimas.10,]
+valores.con.victimas.10$TIPO_ACCIDENTE
+```
+Vemos que no son demasiados datos, ya que en total son 18 instancias, por lo que vamos a probar a eliminarlas a ver el comportamiento del paquete outlier de nuevo.
+```{r}
+train.sin.outliers <- train.imputados[!vector.con.victimas.10,]
+valores.anomalos.sin.victimas.10 <- outlier(train.sin.outliers[,1:5])
+print(valores.anomalos.sin.victimas.10)
+ggplot(data = train.sin.outliers) + geom_bar(mapping = aes(x=TOT_VICTIMAS))
+```
+Vamos a probar a eliminar algunas instancias, con los criterios de otras variables.
+```{r}
+vector.con.muertos.7 <- train.sin.outliers$TOT_MUERTOS >=7
+sum(vector.con.muertos.7)
+vector.con.muertos.6 <- train.sin.outliers$TOT_MUERTOS >= 6
+sum(vector.con.muertos.6)
+vector.con.muertos.5 <- train.sin.outliers$TOT_MUERTOS >= 5
+sum(vector.con.muertos.5)
+vector.con.muertos.4 <- train.sin.outliers$TOT_MUERTOS >= 4
+sum(vector.con.muertos.4)
+train.sin.outliers <- train.sin.outliers[!vector.con.muertos.4,]
+valores.anomalos.sin.muertos.4 <- outlier(train.sin.outliers[,1:5])
+print(valores.anomalos.sin.muertos.4)
+```
+Hagamoslo más rapidamente
+```{r}
+vector.con.anomalias <- ((train.sin.outliers$TOT_HERIDOS_GRAVES >= 6) | (train.sin.outliers$TOT_HERIDOS_LEVES >= 9) | (train.sin.outliers$TOT_VEHICULOS_IMPLICADOS >= 17) )
+sum(vector.con.anomalias)
+vector.con.anomalias <- ((train.sin.outliers$TOT_HERIDOS_GRAVES >= 5) | (train.sin.outliers$TOT_HERIDOS_LEVES >= 8) | (train.sin.outliers$TOT_VEHICULOS_IMPLICADOS >= 16) )
+sum(vector.con.anomalias)
+train.sin.outliers <- train.sin.outliers[!vector.con.anomalias,]
+```
+Pero, que pasaría si eliminamos en función de las anomalias que nos marca el test:
+```{r}
+print(valores.anomalos.test)
+vector.con.anomalias <- ((train.imputados$TOT_HERIDOS_GRAVES > 5) | (train.imputados$TOT_HERIDOS_LEVES > 10) | (train.imputados$TOT_VEHICULOS_IMPLICADOS > 11) | (train.imputados$TOT_VICTIMAS > 10) | (train.imputados$TOT_MUERTOS > 5) )
+sum(vector.con.anomalias)
+```
+En total eliminariamos 14 instancias. Vamos a comprobarlo:
+```{r}
+train.sin.outliers <- train.imputados[!vector.con.anomalias,]
+valores.anomalos.train <- outlier(train.sin.outliers[,1:5])
+print(valores.anomalos.train)
+print(valores.anomalos.test)
+```
+
+## Prueba del modelo con imputación de valores perdidos
+Hagamos por lo tanto una prueba de como afecta la imputación de valores perdidos.
+```{r }
+set.seed(1234)
+ct4 <- ctree(TIPO_ACCIDENTE ~., train.sin.outliers)
+testPred4 <- predict(ct4, newdata = test.imputados)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct4
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.4 <- as.matrix(testPred4)
+salida.modelo.4 <- cbind(c(1:(dim(salida.modelo.4)[1])), salida.modelo.4)
+colnames(salida.modelo.4) <- c("Id","Prediction")
+write.table(salida.modelo.4,file="predicciones/Prediccion4.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 19/02/2017 a las 20:12, con un total de 16 personas entregadas, se ha quedado en la posición 10 con una puntuación del 0.81753. Bajando muy poco con respecto a la anterior puntuación.  
+
+![Cuarta puntuación obtenida en Kaggel](imagenes/Puntuacion4.png "CuartaPuntuacion")
+
+# Transformación de los datos
+Tal y como se vio en el guión de prácticas en el punto 7, vamos a aplicar la transformación para ver que tal nos funciona.
+
+## Transformando los datos
+Vamos a aplicar centrado y escalado sobre el conjunto de datos con los valores ya imputados, para las variables que se consideran continuas.
+```{r}
+library(caret)
+valores.preprocesados <- caret::preProcess(train.sin.outliers[,1:5],method=c("center","scale"))
+valores.transofrmados <- predict(valores.preprocesados,train.sin.outliers[,1:5])
+train.transformado <- cbind(valores.transofrmados,train.sin.outliers[,6:11])
+valores.preprocesados.test <- caret::preProcess(test.imputados[,1:5],method=c("center","scale"))
+valores.transofrmados.test <- predict(valores.preprocesados.test,test.imputados[,1:5])
+test.transformado <- cbind(valores.transofrmados.test,test.imputados[,6:10])
+```
+
+## Prueba del modelo con transformación de los datos
+Hagamos por lo tanto una prueba de como afecta la transformación de los datos.
+```{r }
+set.seed(1234)
+ct5 <- ctree(TIPO_ACCIDENTE ~., train.transformado)
+testPred5 <- predict(ct5, newdata = test.transformado)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct5
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.5 <- as.matrix(testPred5)
+salida.modelo.5 <- cbind(c(1:(dim(salida.modelo.5)[1])), salida.modelo.5)
+colnames(salida.modelo.5) <- c("Id","Prediction")
+write.table(salida.modelo.5,file="predicciones/Prediccion5.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 20/02/2017 a las 13:15, con un total de 18 personas entregadas, se ha quedado en la posición 12 con una puntuación del 0.55147. Bajando mucho con respecto a la anterior puntuación, por lo que esta transformación no la tendremos en cuenta.  
+
+![Quinta puntuación obtenida en Kaggel](imagenes/Puntuacion5.png "QuintaPuntuacion")
+
 
 
 
