@@ -10,8 +10,17 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+#setwd("E:/0Descargas/JDownloader/2 Mineria de datos, preprocesamiento y clasificacion")
 setwd("~/Dropbox/zMaster/zRStudio/Master-en-Ciencia-De-Datos-e-Ingeniería-de-Computadores/2 Mineria de datos, preprocesamiento y clasificacion")
 library(party)
+library(FSelector)
+library(mlbench)
+library(ggplot2)
+library(Hmisc)
+library(fBasics)
+library(mice)
+library(outliers)
+library(caret)
 ```
 
 # Introducción al problema y a Kaggel
@@ -133,7 +142,6 @@ Como no se ha hecho antes, y debería ser uno de los primeros pasos a realizar, 
 ## Análisis de las variables actuales
 Vamos a ver el comportamiento de nuestras variables con respecto al TIPO_ACCIDENTE, a ver que relación pueden tener.
 ```{r}
-library(ggplot2)
 ggplot(data = accidentes.train.sin.variables.2) + geom_point(mapping = aes(x = TOT_VICTIMAS , y = TIPO_ACCIDENTE))
 ```
 Podemos ver como para a partir de 10 victimas, el accidente suele ser o una colisión de vehículos, salida de vía, o muy pocas veces otro tipo de accidente. Por lo que puede ser una relación interesante. 
@@ -196,13 +204,11 @@ str(accidentes.train.sin.variables.1)
 ```
 Si queremos información más detallada:
 ```{r}
-library(Hmisc)
 describe(accidentes.train.sin.variables.2[1])
 ```
 Esto lo podemos hacer con las variables que veamos oportunas. 
 Otra forma de ver más información es:
 ```{r}
-library(fBasics)
 basicStats(accidentes.train.sin.variables.2[1])
 ```
 
@@ -218,7 +224,6 @@ Vemos que dos de estas variables que podrían ser más interesantes son visibili
 ```{r}
 accidentes.train.a.imputar <- cbind(accidentes.train.sin.variables.2, accidentes.train.variables.eliminadas[,3:4])
 accidentes.test.a.imputar <- cbind(accidentes.test.sin.variables.2, accidentes.test.variables.eliminadas.copia[,3:4])
-library(mice)
 set.seed(1234)
 train.imputados.incompletos <- mice::mice(accidentes.train.a.imputar, m=1, method="pmm")
 train.imputados <- mice::complete(train.imputados.incompletos)
@@ -249,12 +254,11 @@ El resultado de este modelo para la competición de Kaggel, subido el 19/02/2017
 ![Tercera puntuación obtenida en Kaggel](imagenes/TerceraPuntuacion.png "TerceraPuntuacion")
 
 # Detección de anomalias
-Veamos como detectar valores anomalos en nuestros datos.
+Veamos como detectar valores anómalos en nuestros datos.
 
 ## Uso del paquete outliers
 Veamos si tenemos valores perdidos en nuestros datos, solo con valores que no son discretas.
 ```{r}
-library(outliers)
 valores.anomalos <- outlier(train.imputados[,1:5])
 print(valores.anomalos)
 ggplot(data = train.imputados) + geom_bar(mapping = aes(x=TOT_VICTIMAS))
@@ -274,7 +278,7 @@ require(mvoutlier)
 Como se puede ver, se ha obtenido un error el cual no he podido solucionar.
 
 ## Eliminación de valores anómalos
-En función de lo obtenido con el paquete otulier, voy a intentar realizar algo con este paquete para ver que tal se comporta nuestro dataset.
+En función de lo obtenido con el paquete outlier, voy a intentar realizar algo con este paquete para ver que tal se comporta nuestro dataset.
 ```{r}
 valores.anomalos.train <- outlier(train.imputados[,1:5])
 valores.anomalos.test <- outlier(test.imputados[,1:5])
@@ -315,7 +319,7 @@ train.sin.outliers <- train.sin.outliers[!vector.con.muertos.4,]
 valores.anomalos.sin.muertos.4 <- outlier(train.sin.outliers[,1:5])
 print(valores.anomalos.sin.muertos.4)
 ```
-Hagamoslo más rapidamente
+Vamos a realizarlo más rápidamente
 ```{r}
 vector.con.anomalias <- ((train.sin.outliers$TOT_HERIDOS_GRAVES >= 6) | (train.sin.outliers$TOT_HERIDOS_LEVES >= 9) | (train.sin.outliers$TOT_VEHICULOS_IMPLICADOS >= 17) )
 sum(vector.con.anomalias)
@@ -323,13 +327,13 @@ vector.con.anomalias <- ((train.sin.outliers$TOT_HERIDOS_GRAVES >= 5) | (train.s
 sum(vector.con.anomalias)
 train.sin.outliers <- train.sin.outliers[!vector.con.anomalias,]
 ```
-Pero, que pasaría si eliminamos en función de las anomalias que nos marca el test:
+Pero, que pasaría si eliminamos en función de las anomalías que nos marca el test:
 ```{r}
 print(valores.anomalos.test)
 vector.con.anomalias <- ((train.imputados$TOT_HERIDOS_GRAVES > 5) | (train.imputados$TOT_HERIDOS_LEVES > 10) | (train.imputados$TOT_VEHICULOS_IMPLICADOS > 11) | (train.imputados$TOT_VICTIMAS > 10) | (train.imputados$TOT_MUERTOS > 5) )
 sum(vector.con.anomalias)
 ```
-En total eliminariamos 14 instancias. Vamos a comprobarlo:
+En total eliminaríamos 14 instancias. Vamos a comprobarlo:
 ```{r}
 train.sin.outliers <- train.imputados[!vector.con.anomalias,]
 valores.anomalos.train <- outlier(train.sin.outliers[,1:5])
@@ -365,7 +369,6 @@ Tal y como se vio en el guión de prácticas en el punto 7, vamos a aplicar la t
 ## Transformando los datos
 Vamos a aplicar centrado y escalado sobre el conjunto de datos con los valores ya imputados, para las variables que se consideran continuas.
 ```{r}
-library(caret)
 valores.preprocesados <- caret::preProcess(train.sin.outliers[,1:5],method=c("center","scale"))
 valores.transofrmados <- predict(valores.preprocesados,train.sin.outliers[,1:5])
 train.transformado <- cbind(valores.transofrmados,train.sin.outliers[,6:11])
@@ -395,6 +398,69 @@ write.table(salida.modelo.5,file="predicciones/Prediccion5.txt",sep=",",quote = 
 El resultado de este modelo para la competición de Kaggel, subido el 20/02/2017 a las 13:15, con un total de 18 personas entregadas, se ha quedado en la posición 12 con una puntuación del 0.55147. Bajando mucho con respecto a la anterior puntuación, por lo que esta transformación no la tendremos en cuenta.  
 
 ![Quinta puntuación obtenida en Kaggel](imagenes/Puntuacion5.png "QuintaPuntuacion")
+
+# Discretización
+Para este conjunto de datos no se realiza discretización ya que no tenemos variables continuas como para poder discretizarlas. 
+
+# Selección de características
+Para este apartado comenzaremos con los dataset originales.
+```{r}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+```
+
+## Paquete FSelector
+### Aproximación filter: chi.squared
+Determina los pesos de los atributos discretos usando el test de independencia chi-cuadrado (con respecto a la variable clase). 
+Calculamos los pesos de los atributos: la medida devuelta indica el nivel de dependencia de cada atributo frente a la variable clase
+```{r}
+set.seed(1234)
+pesos <- FSelector::chi.squared(TIPO_ACCIDENTE~.,train.original)
+pesos
+```
+Vamos a seleccionar los 7 mejores
+```{r}
+subset <- FSelector::cutoff.k(pesos, 7)
+las.7.mas.importantes <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+las.7.mas.importantes
+```
+
+Por lo que vamos a montar un modelo con estas variables
+```{r}
+train.filter.chi.squared <- train.original[,c("TOT_VEHICULOS_IMPLICADOS","CARRETERA","ZONA_AGRUPADA","ZONA","ACERAS","PRIORIDAD","RED_CARRETERA","TIPO_ACCIDENTE")]
+test.filter.chi.squared <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","CARRETERA","ZONA_AGRUPADA","ZONA","ACERAS","PRIORIDAD","RED_CARRETERA")]
+summary(train.filter.chi.squared)
+```
+Vemos que la variable CARRETERA tiene un alto número de valores perdidos por lo que la vamos a descartar, a pesar de que la selección de características nos ha dicho que es importante.
+```{r}
+train.filter.chi.squared["CARRETERA"] <- NULL
+test.filter.chi.squared["CARRETERA"] <- NULL
+```
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct6 <- ctree(TIPO_ACCIDENTE ~., train.filter.chi.squared)
+testPred6 <- predict(ct6, newdata = test.filter.chi.squared)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct6
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.6 <- as.matrix(testPred6)
+salida.modelo.6 <- cbind(c(1:(dim(salida.modelo.6)[1])), salida.modelo.6)
+colnames(salida.modelo.6) <- c("Id","Prediction")
+write.table(salida.modelo.6,file="predicciones/Prediccion6.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 22/02/2017 a las 13:20, con un total de 21 personas entregadas, se ha quedado en la posición 13 con una puntuación del 0.2089. Mejorando a la que ya se tenia anteriormente, por lo que vemos que esta selección de características ha funcionado correctamente.  
+
+![Sexta puntuación obtenida en Kaggel](imagenes/Puntuacion6.png "SextaPuntuacion")
+
+
 
 
 
