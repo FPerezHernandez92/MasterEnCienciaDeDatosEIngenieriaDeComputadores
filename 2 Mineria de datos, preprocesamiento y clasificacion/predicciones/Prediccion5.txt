@@ -12973,7 +12973,7 @@ Id,Prediction
 12972,Colision_Vehiculos
 12973,Colision_Vehiculos
 12974,Colision_Vehiculos
-12975,Otro
+12975,Colision_Vehiculos
 12976,Colision_Vehiculos
 12977,Colision_Vehiculos
 12978,Colision_Vehiculos

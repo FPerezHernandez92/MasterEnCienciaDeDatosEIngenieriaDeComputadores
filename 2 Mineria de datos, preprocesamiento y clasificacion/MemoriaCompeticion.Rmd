@@ -269,7 +269,7 @@ Viendo que en cada variable tenemos distintos valores anómalos como sería el v
 Voy a intentar usar el paquete mvoutlier.
 ```{r}
 require(mvoutlier)
-resultado.busqueda.anomalias <- uni.plot(train.imputados[1:200,1:2])
+#resultado.busqueda.anomalias <- uni.plot(train.imputados[1:200,1:2])
 ```
 Como se puede ver, se ha obtenido un error el cual no he podido solucionar.
 
