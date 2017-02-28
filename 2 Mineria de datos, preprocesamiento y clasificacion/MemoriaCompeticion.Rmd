@@ -422,8 +422,8 @@ pesos
 Vamos a seleccionar los 7 mejores
 ```{r}
 subset <- FSelector::cutoff.k(pesos, 7)
-las.7.mas.importantes <- as.simple.formula(subset, "TIPO_ACCIDENTE")
-las.7.mas.importantes
+las.7.mas.importantes.chi.squared <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+las.7.mas.importantes.chi.squared
 ```
 
 Por lo que vamos a montar un modelo con estas variables
@@ -456,13 +456,166 @@ salida.modelo.6 <- cbind(c(1:(dim(salida.modelo.6)[1])), salida.modelo.6)
 colnames(salida.modelo.6) <- c("Id","Prediction")
 write.table(salida.modelo.6,file="predicciones/Prediccion6.txt",sep=",",quote = F,row.names = F)
 ```
-El resultado de este modelo para la competición de Kaggel, subido el 22/02/2017 a las 13:20, con un total de 21 personas entregadas, se ha quedado en la posición 13 con una puntuación del 0.2089. Mejorando a la que ya se tenia anteriormente, por lo que vemos que esta selección de características ha funcionado correctamente.  
+El resultado de este modelo para la competición de Kaggel, subido el 22/02/2017 a las 13:20, con un total de 21 personas entregadas, se ha quedado en la posición 13 con una puntuación del 0.82089. Mejorando a la que ya se tenia anteriormente, por lo que vemos que esta selección de características ha funcionado correctamente.  
 
 ![Sexta puntuación obtenida en Kaggel](imagenes/Puntuacion6.png "SextaPuntuacion")
 
+### Aproximación filter: correlation
+Busca los pesos de atributos continuos en base a medidas de correlación. Por lo tanto esta aproximación no podremos realizarla al tener la variable clase no numérica.  
+
+### Aproximación filter: entropy.based
+Encontraremos los pesos de los atributos discretos en base a su correlación con el atributo clase.
+```{r}
+set.seed(1234)
+pesos <- FSelector::information.gain(TIPO_ACCIDENTE~., train.original)
+subset <- cutoff.k(pesos,7)
+los.7.mas.importantes.information.gain <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+los.7.mas.importantes.information.gain
+```
+```{r}
+set.seed(1234)
+pesos <- FSelector::gain.ratio(TIPO_ACCIDENTE~., train.original)
+subset <- cutoff.k(pesos,7)
+los.7.mas.importantes.gain.ratio <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+los.7.mas.importantes.gain.ratio
+```
+```{r}
+set.seed(1234)
+pesos <- FSelector::symmetrical.uncertainty(TIPO_ACCIDENTE~., train.original)
+subset <- cutoff.k(pesos,7)
+los.7.mas.importantes.symmetrical.uncertainty <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+los.7.mas.importantes.symmetrical.uncertainty
+```
+Por lo que en función de estas tres salidas tenemos que las variables más importantes serían: TOT_VEHICULOS_IMPLICADOS, CARRETERA, ZONA, ZONA_AGRUPADA, TIPO_VIA, TRAZADO_NO_INTERSEC, PRIORIDAD y RED_CARRETERA. El único que difiere entre algoritmos es PRIORIDAD y RED_CARRETERA.
+Recordemos los que teníamos con chi.cuadrado:
+```{r}
+las.7.mas.importantes.chi.squared
+```
+Es decir, tenemos diferencias en ACERAS. Vamos a probar un modelo con todas las variables dadas por este nuevo método.
+```{r}
+train.filter.entropy.bases <- train.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","ZONA","TIPO_VIA","PRIORIDAD","RED_CARRETERA","TRAZADO_NO_INTERSEC","TIPO_ACCIDENTE")]
+test.filter.entropy.bases <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","ZONA","TIPO_VIA","PRIORIDAD","RED_CARRETERA","TRAZADO_NO_INTERSEC")]
+```
+Como anteriormente, hemos quitado la variable CARRETERA
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct7 <- ctree(TIPO_ACCIDENTE ~., train.filter.entropy.bases)
+testPred7 <- predict(ct7, newdata = test.filter.entropy.bases)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct7
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.7 <- as.matrix(testPred7)
+salida.modelo.7 <- cbind(c(1:(dim(salida.modelo.7)[1])), salida.modelo.7)
+colnames(salida.modelo.7) <- c("Id","Prediction")
+write.table(salida.modelo.7,file="predicciones/Prediccion7.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 22/02/2017 a las 14:00, con un total de 22 personas entregadas, se ha quedado en la posición 14 con una puntuación del 0.82227. Mejorando a la que ya se tenia anteriormente, por lo que vemos que esta selección de características ha funcionado mejor.  
+
+![7 puntuación obtenida en Kaggel](imagenes/Puntuacion7.png "7Puntuacion")
+
+### Aproximación filter: oneR
+Método simple de cálculo de pesos para atributos discretos mediante el uso de reglas de asociación con un sólo término en el antecedente.
+
+```{r}
+pesos <- FSelector::oneR(TIPO_ACCIDENTE~., train.original)
+subset <- cutoff.k(pesos,7)
+los.7.mas.importantes.oneR <- as.simple.formula(subset,"TIPO_ACCIDENTE")
+los.7.mas.importantes.oneR
+```
+
+Podemos ver que tenemos distintos atributos más importantes según este método, por lo que vamos aprobar que tal se comportan estos atributos.
+```{r}
+train.filter.oneR <- train.original[,c("ANIO","TOT_VEHICULOS_IMPLICADOS","ACERAS","DENSIDAD_CIRCULACION","ZONA_AGRUPADA","TOT_MUERTOS","TOT_VICTIMAS","TIPO_ACCIDENTE")]
+test.filter.oneR <- test.original[,c("ANIO","TOT_VEHICULOS_IMPLICADOS","ACERAS","DENSIDAD_CIRCULACION","ZONA_AGRUPADA","TOT_MUERTOS","TOT_VICTIMAS")]
+```
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct8 <- ctree(TIPO_ACCIDENTE ~., train.filter.oneR)
+testPred8 <- predict(ct8, newdata = test.filter.oneR)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct8
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.8 <- as.matrix(testPred8)
+salida.modelo.8 <- cbind(c(1:(dim(salida.modelo.8)[1])), salida.modelo.8)
+colnames(salida.modelo.8) <- c("Id","Prediction")
+write.table(salida.modelo.8,file="predicciones/Prediccion8.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 23/02/2017 a las 12:51, con un total de 22 personas entregadas, se ha quedado en la posición 14 con una puntuación del 0.81891. La cual no mejora a la mejor que ya teníamos.  
+
+![8 puntuación obtenida en Kaggel](imagenes/Puntuacion8.png "8Puntuacion")
+
+### Aproximación filter: relief
+Algoritmo de búsqueda de pesos de atributos continuos y discretos en base a la distancia entre instancias.
+```{r}
+pesos <- relief(TIPO_ACCIDENTE~., train.original, neighbours.count = 5, sample.size = 20)
+pesos
+subset <- cutoff.k(pesos,7)
+los.7.mas.importantes.relief <- as.simple.formula(subset,"TIPO_ACCIDENTE")
+los.7.mas.importantes.relief
+```
+Vemos que los más importantes, según este método son: COMUNIDAD_AUTONOMA, PROVINCIA, MES, HORA, PRIORIDAD, ANIO y LUMINOSIDAD.
+
+Vamos a probar que tal se comportan estos atributos. (HORA la elimino al tener un gran número de factores y ralentizar los cálculos)
+```{r}
+train.filter.relief <- train.original[,c("COMUNIDAD_AUTONOMA","PROVINCIA","MES","PRIORIDAD","ANIO","LUMINOSIDAD","TIPO_ACCIDENTE")]
+test.filter.relief <- test.original[,c("COMUNIDAD_AUTONOMA","PROVINCIA","MES","PRIORIDAD","ANIO","LUMINOSIDAD")]
+```
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct9 <- ctree(TIPO_ACCIDENTE ~., train.filter.relief)
+testPred9 <- predict(ct9, newdata = test.filter.relief)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct9
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.9 <- as.matrix(testPred9)
+salida.modelo.9 <- cbind(c(1:(dim(salida.modelo.9)[1])), salida.modelo.9)
+colnames(salida.modelo.9) <- c("Id","Prediction")
+write.table(salida.modelo.9,file="predicciones/Prediccion9.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 28/02/2017 a las 11:51, con un total de 26 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.59119. La cual empeora mucho a lo que ya se tenia, por lo que no es una buena selección de características.  
+
+![9 puntuación obtenida en Kaggel](imagenes/Puntuacion9.png "9Puntuacion")
 
 
 
+### Aproximación wrapper
+Decir que todos los métodos propuestos de wrapper como: best.first.search, exhaustive.search, greedy.search y hill.climbing.search, no me han funcionado debido al tipo de datos que tenemos. Por contra, el método cfs si ha funcionado correctamente.
+
+```{r}
+library(rpart)
+data(iris)
+copia.iris <- iris
+iris <- train.original[1:200,c(8,9,10,11,30)]
+
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.original)
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
+```
+
+```{r}
+
+```
 
 
 
