@@ -604,18 +604,65 @@ Decir que todos los métodos propuestos de wrapper como: best.first.search, exha
 
 ```{r}
 library(rpart)
-data(iris)
-copia.iris <- iris
-iris <- train.original[1:200,c(8,9,10,11,30)]
-
+set.seed(1234)
 subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.original)
 el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
 el.mejor.segun.cfs
 ```
+Siendo TOT_VEHICULOS_IMPLICADOS, la mejor característica, repitamos esto para obtener las 5 mejores, de forma que eliminamos la que mejor se obtiene. 
+```{r}
+set.seed(1234)
+train.wrapper.cfs = train.original[,-12]
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.wrapper.cfs)
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
+```
+Ahora obtenemos ZONA_AGRUPADA, CARRETERA y TRAZADO_NO_INTERSEC.
 
 ```{r}
-
+set.seed(1234)
+train.wrapper.cfs = train.original[,-c(12,14,15,18)]
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.wrapper.cfs)
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
 ```
+Obteniendo: TOT_HERIDOS_LEVES, ZONA, RED_CARRETERA, TIPO_VIA, TIPO_INTERSEC, PRIORIDAD, SUPERFICIE_CALZADA y ACERAS.
+
+Por lo tanto, ya que tenemos muchas características, vamos a probar el modelo con todas, salvo CARRETERA.
+```{r}
+train.wrapper.cfs <- train.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","PRIORIDAD","SUPERFICIE_CALZADA","ACERAS","TIPO_ACCIDENTE")]
+test.wrapper.cfs <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","PRIORIDAD","SUPERFICIE_CALZADA","ACERAS")]
+```
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct10 <- ctree(TIPO_ACCIDENTE ~., train.wrapper.cfs)
+testPred10 <- predict(ct10, newdata = test.wrapper.cfs)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct10
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.10 <- as.matrix(testPred10)
+salida.modelo.10 <- cbind(c(1:(dim(salida.modelo.10)[1])), salida.modelo.10)
+colnames(salida.modelo.10) <- c("Id","Prediction")
+write.table(salida.modelo.10,file="predicciones/Prediccion10.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 28/02/2017 a las 12:17, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82395. Por lo que se ha mejorado a la mejor obtenida por mi hasta el momento.  
+
+![10 puntuación obtenida en Kaggel](imagenes/Puntuacion10.png "10Puntuacion")
+
+
+
+
+
+
+
+
 
 
 
