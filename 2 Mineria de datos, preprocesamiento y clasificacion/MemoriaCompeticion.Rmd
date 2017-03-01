@@ -21,6 +21,9 @@ library(fBasics)
 library(mice)
 library(outliers)
 library(caret)
+library(rpart)
+library(pROC)
+library(class)
 ```
 
 # Introducción al problema y a Kaggel
@@ -599,11 +602,10 @@ El resultado de este modelo para la competición de Kaggel, subido el 28/02/2017
 
 
 
-### Aproximación wrapper
+### Aproximación wrapper: cfs
 Decir que todos los métodos propuestos de wrapper como: best.first.search, exhaustive.search, greedy.search y hill.climbing.search, no me han funcionado debido al tipo de datos que tenemos. Por contra, el método cfs si ha funcionado correctamente.
 
 ```{r}
-library(rpart)
 set.seed(1234)
 subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.original)
 el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
@@ -657,7 +659,114 @@ El resultado de este modelo para la competición de Kaggel, subido el 28/02/2017
 ![10 puntuación obtenida en Kaggel](imagenes/Puntuacion10.png "10Puntuacion")
 
 
+### Aproximación wrapper: consistency
+Probamos este método:
+```{r}
+set.seed(1234)
+subset <- consistency(TIPO_ACCIDENTE~.,train.original)
+el.mejor.segun.consistency <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.consistency
+```
 
+Obteniendo 20 características como importantes, no apareciendo: ANIO, COMUNIDAD_AUTONOMA, ISLA, TOT_MUERTOS, TOT_HERIDOS_GRAVES, ZONA, ZONA_AGRUPADA, RED_CARRETERA, VISIBILIDAD_RESTRINGIDA.
+Por lo tanto, ya que tenemos muchas características, vamos a ejecutar nuestro modelo. Quitando además CARRETERA al ralentizar los cálculos. 
+```{r}
+train.wrapper.consistency <- train.original[,c(2,3,4,5,8,11,12,17,18,19,20,21,22,23,24,26,27,28,29,30)]
+test.wrapper.consistency <-  test.original[,c(2,3,4,5,8,11,12,17,18,19,20,21,22,23,24,26,27,28,29)]
+```
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba. Quitando además CARRETERA para realizar los cálculos más rápidamente.
+```{r }
+set.seed(1234)
+ct11 <- ctree(TIPO_ACCIDENTE ~., train.wrapper.consistency)
+testPred11 <- predict(ct11, newdata = test.wrapper.consistency)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct11
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.11 <- as.matrix(testPred11)
+salida.modelo.11 <- cbind(c(1:(dim(salida.modelo.11)[1])), salida.modelo.11)
+colnames(salida.modelo.11) <- c("Id","Prediction")
+write.table(salida.modelo.11,file="predicciones/Prediccion11.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 01/03/2017 a las 16:56, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82237. Empeorando un poco a la mejor actual.  
+
+![11 puntuación obtenida en Kaggel](imagenes/Puntuacion11.png "11Puntuacion")
+
+
+### Aproximación embedded: random.forest.importance
+Método de cálculo de pesos de importancia de atributos calculados sobre un modelo construido usando el algoritmo RandomForest. 
+Al no funcionar este método con variables que tengan más de 53 categorías hemos tenido que eliminar algunas variables como: CARRETERA y HORA.
+El tercer argumento con valor 1 significa la reducción en la media de fiabilidad predictiva.
+```{r}
+train.embedded.random.forest.importance <- train.original[,c(1,2,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)]
+set.seed(1234)
+pesos1 <- FSelector::random.forest.importance(TIPO_ACCIDENTE~.,train.embedded.random.forest.importance, importance.type = 1)
+subset1 <- cutoff.k(pesos1,7)
+los.7.mas.importantes.random.forest.importance1 <- as.simple.formula(subset1, "TIPO_ACCIDENTE")
+los.7.mas.importantes.random.forest.importance1
+```
+
+El tercer argumento con valor 2 significa la reducción en la media de impureza de nodos. 
+```{r}
+set.seed(1234)
+pesos2 <- FSelector::random.forest.importance(TIPO_ACCIDENTE~.,train.embedded.random.forest.importance, importance.type = 2)
+subset2 <- cutoff.k(pesos2,7)
+los.7.mas.importantes.random.forest.importance2 <- as.simple.formula(subset2, "TIPO_ACCIDENTE")
+los.7.mas.importantes.random.forest.importance2
+```
+Saliendo con ambos métodos las mismas variables como las más importantes. 
+
+```{r}
+train.embedded.random.forest.importance <- train.original[,c("TOT_VEHICULOS_IMPLICADOS","PRIORIDAD","SUPERFICIE_CALZADA","TIPO_INTERSEC","ZONA","ZONA_AGRUPADA","TIPO_VIA","TIPO_ACCIDENTE")]
+test.embedded.random.forest.importance <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","PRIORIDAD","SUPERFICIE_CALZADA","TIPO_INTERSEC","ZONA","ZONA_AGRUPADA","TIPO_VIA")]
+```
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba. Quitando además CARRETERA para realizar los cálculos más rápidamente.
+```{r }
+set.seed(1234)
+ct12 <- ctree(TIPO_ACCIDENTE ~., train.embedded.random.forest.importance)
+testPred12 <- predict(ct12, newdata = test.embedded.random.forest.importance)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct12
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.12 <- as.matrix(testPred12)
+salida.modelo.12 <- cbind(c(1:(dim(salida.modelo.12)[1])), salida.modelo.12)
+colnames(salida.modelo.12) <- c("Id","Prediction")
+write.table(salida.modelo.12,file="predicciones/Prediccion12.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 01/03/2017 a las 16:32, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.2326. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
+
+![12 puntuación obtenida en Kaggel](imagenes/Puntuacion12.png "12Puntuacion")
+
+## Paquete caret
+Para este apartado comenzaremos con los dataset originales.
+```{r}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+```
+
+### Cálculo de la importancia de las variables
+
+```{r}
+train.caret <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+set.seed(1234)
+control <- caret::trainControl(method="repeatedcv",number=10,repeats=3)
+model <- caret::train(TIPO_ACCIDENTE~., data=train.caret, method="lvq", preProcess="scale",trControl=control)
+importance <- caret::varImp(model, scale=FALSE)
+print(importance)
+plot(importance,lw=3)
+```
 
 
 
