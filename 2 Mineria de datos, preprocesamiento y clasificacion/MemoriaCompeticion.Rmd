@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
 #setwd("E:/0Descargas/JDownloader/2 Mineria de datos, preprocesamiento y clasificacion")
 setwd("~/Dropbox/zMaster/zRStudio/Master-en-Ciencia-De-Datos-e-Ingeniería-de-Computadores/2 Mineria de datos, preprocesamiento y clasificacion")
 library(party)
@@ -676,8 +676,12 @@ test.wrapper.consistency <-  test.original[,c(2,3,4,5,8,11,12,17,18,19,20,21,22,
 ```
 
 ### Prueba del modelo
-Hagamos por lo tanto una prueba. Quitando además CARRETERA para realizar los cálculos más rápidamente.
+Hagamos por lo tanto una prueba. Quitando además CARRETERA para realizar los cálculos más rápidamente. Además, para que nuestro arbol funcione, he eliminado la variable HORA, junto con MEDIDAS_ESPECIAL, al contener esta un factor que en test no aparece.
 ```{r }
+train.wrapper.consistency <- train.wrapper.consistency[,-2]
+test.wrapper.consistency <- test.wrapper.consistency[,-2]
+train.wrapper.consistency <- train.wrapper.consistency[,-18]
+test.wrapper.consistency <- test.wrapper.consistency[,-18]
 set.seed(1234)
 ct11 <- ctree(TIPO_ACCIDENTE ~., train.wrapper.consistency)
 testPred11 <- predict(ct11, newdata = test.wrapper.consistency)
@@ -756,17 +760,7 @@ train.original <- read.csv("accidentes-kaggle.csv")
 test.original <- read.csv("accidentes-kaggle-test.csv")
 ```
 
-### Cálculo de la importancia de las variables
 
-```{r}
-train.caret <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
-set.seed(1234)
-control <- caret::trainControl(method="repeatedcv",number=10,repeats=3)
-model <- caret::train(TIPO_ACCIDENTE~., data=train.caret, method="lvq", preProcess="scale",trControl=control)
-importance <- caret::varImp(model, scale=FALSE)
-print(importance)
-plot(importance,lw=3)
-```
 
 
 
