@@ -24,6 +24,9 @@ library(caret)
 library(rpart)
 library(pROC)
 library(class)
+library(randomForest)
+library(Boruta)
+library(NoiseFiltersR)
 ```
 
 # Introducción al problema y a Kaggel
@@ -676,7 +679,7 @@ test.wrapper.consistency <-  test.original[,c(2,3,4,5,8,11,12,17,18,19,20,21,22,
 ```
 
 ### Prueba del modelo
-Hagamos por lo tanto una prueba. Quitando además CARRETERA para realizar los cálculos más rápidamente. Además, para que nuestro arbol funcione, he eliminado la variable HORA, junto con MEDIDAS_ESPECIAL, al contener esta un factor que en test no aparece.
+Hagamos por lo tanto una prueba. Quitando además CARRETERA para realizar los cálculos más rápidamente. Además, para que nuestro árbol funcione, he eliminado la variable HORA, junto con MEDIDAS_ESPECIAL, al contener esta un factor que en test no aparece.
 ```{r }
 train.wrapper.consistency <- train.wrapper.consistency[,-2]
 test.wrapper.consistency <- test.wrapper.consistency[,-2]
@@ -748,7 +751,7 @@ salida.modelo.12 <- cbind(c(1:(dim(salida.modelo.12)[1])), salida.modelo.12)
 colnames(salida.modelo.12) <- c("Id","Prediction")
 write.table(salida.modelo.12,file="predicciones/Prediccion12.txt",sep=",",quote = F,row.names = F)
 ```
-El resultado de este modelo para la competición de Kaggel, subido el 01/03/2017 a las 16:32, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.2326. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
+El resultado de este modelo para la competición de Kaggel, subido el 01/03/2017 a las 16:32, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82326. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
 
 ![12 puntuación obtenida en Kaggel](imagenes/Puntuacion12.png "12Puntuacion")
 
@@ -758,14 +761,245 @@ Para este apartado comenzaremos con los dataset originales.
 rm(list=ls()) 
 train.original <- read.csv("accidentes-kaggle.csv")
 test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+```
+
+### Esquema de valoración con aprendizaje de random forest
+Probemos este paquete
+```{r}
+train.caret <- train.sin.na[,-3]
+set.seed(1234)
+control <- caret::rfeControl(functions = rfFuncs, method = "cv", number = 10)
+results <- caret::rfe(train.caret[,1:20], train.caret[,21],sizes=c(1:20),rfeControl=control)
+results
+predictors(results)
+plot(results, type=c("g","o"),lw=2)
+```
+Por lo tanto nos quedamos con las variables: TOT_VEHICULOS_IMPLICADOS, SUPERFICI_CALZADA, COMUNIDAD_AUTONOMA, TRAZADO_NO_INTERSEC, TIPO_INTERSEC, FACTORES_ATMOSFERICOS y ZONA.
+```{r}
+train.caret <- train.caret[,c(11,18,5,16,17,20,12,21)]
+test.caret <- test.sin.na[,c(12,19,6,17,18,21,13)]
+```
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct13 <- ctree(TIPO_ACCIDENTE ~., train.caret)
+testPred13 <- predict(ct13, newdata = test.caret)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct13
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.13 <- as.matrix(testPred13)
+salida.modelo.13 <- cbind(c(1:(dim(salida.modelo.13)[1])), salida.modelo.13)
+colnames(salida.modelo.13) <- c("Id","Prediction")
+write.table(salida.modelo.13,file="predicciones/Prediccion13.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 12:44, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82286. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
+
+![13 puntuación obtenida en Kaggel](imagenes/Puntuacion13.png "13Puntuacion")
+
+## Paquete Boruta
+Para este apartado comenzaremos con los dataset originales.
+```{r}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+```
+
+### Obtención de estadísticas sobre los atributos
+
+```{r}
+set.seed(1234)
+Bor.son <- Boruta(TIPO_ACCIDENTE~.,data=train.sin.na,doTrace = 2)
+Bor.son
+stats <- attStats(Bor.son)
+stats
+plot(normHits~meanImp, col=stats$decision, data=stats)
+stats[stats$minImp > 20,]
+```
+Hemos visto como Boruta nos indica que el atributo que podemos quitar es ISLA, pero además he podado por minImp < 20, quedándome con los atributos: PROVINCIA, COMUNIDAD_AUTONOMA, TOT_HERIDOS_LEVES, TOT_VEHICULOS_IMPLICADOS, ZONA, ZONA_AGRUPADA, RED_CARRETERA, TIPO_VIA, TRAZADO_NO_INTERSEC, TIPO_INTERSEC, SUPERFICIE_CALZADA y FACTORES_ATMOSFERICOS.
+Vamos a probar un modelo con estas variables.
+```{r}
+train.boruta <- train.sin.na[,c(5,6,11,12,13,14,15,16,17,18,19,21,22)]
+test.boruta <- test.sin.na[,c(5,6,11,12,13,14,15,16,17,18,19,21)]
 ```
 
 
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct14 <- ctree(TIPO_ACCIDENTE ~., train.boruta)
+testPred14 <- predict(ct14, newdata = test.boruta)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct14
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.14 <- as.matrix(testPred14)
+salida.modelo.14 <- cbind(c(1:(dim(salida.modelo.14)[1])), salida.modelo.14)
+colnames(salida.modelo.14) <- c("Id","Prediction")
+write.table(salida.modelo.14,file="predicciones/Prediccion14.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 12:47, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82326. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
 
+![14 puntuación obtenida en Kaggel](imagenes/Puntuacion14.png "14Puntuacion")
 
+### Combinación con random forest
+```{r}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+```
 
+```{r}
+train.boruta.random.forest <- train.sin.na[,-3]
+set.seed(1234)
+Bor.ran <- Boruta(TIPO_ACCIDENTE~.,data=train.boruta.random.forest,doTrace=2)
+model1 <- randomForest(TIPO_ACCIDENTE~.,data=train.boruta.random.forest)
+model1
+model2 <- randomForest(train.boruta.random.forest[,getSelectedAttributes(Bor.ran)],train.boruta.random.forest$TIPO_ACCIDENTE)
+model2
+Bor.ran
+plot(Bor.ran)
+```
+Vemos como el atributo que nos indica que se puede eliminar es ISLA.
+Probemos el modelo sin esta variable.
+```{r}
+train.boruta.random.forest <- train.boruta.random.forest[,-6]
+test.boruta.random.forest <- test.sin.na[,-3]
+test.boruta.random.forest <- test.boruta.random.forest[,-6]
+```
 
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct15 <- ctree(TIPO_ACCIDENTE ~., train.boruta.random.forest)
+testPred15 <- predict(ct15, newdata = test.boruta.random.forest)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct15
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.15 <- as.matrix(testPred15)
+salida.modelo.15 <- cbind(c(1:(dim(salida.modelo.15)[1])), salida.modelo.15)
+colnames(salida.modelo.15) <- c("Id","Prediction")
+write.table(salida.modelo.15,file="predicciones/Prediccion15.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 12:51, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82286. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
 
+![15 puntuación obtenida en Kaggel](imagenes/Puntuacion15.png "15Puntuacion")
 
+# Detección de ruido
+```{r}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+```
+Vamos a probar este método. 
+```{r}
+#install.packages("NoiseFiltersR")
+#library(NoiseFiltersR)
+out <- IPF(TIPO_ACCIDENTE~., data=train.original,s=2)
+#summary(out, explicit=TRUE)
+identical(out$cleanData, train.original[setdiff(1:nrow(train.original),out$remIdx),])
+train.sin.ruido1 <- train.original[setdiff(1:nrow(train.original),out$remIdx),]
+
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.sin.ruido1,s=2)
+#summary(out, explicit=TRUE)
+train.sin.ruido2 <- train.sin.ruido1[setdiff(1:nrow(train.sin.ruido1),out$remIdx),]
+
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.sin.ruido2,s=2)
+#summary(out, explicit=TRUE)
+train.sin.ruido3 <- train.sin.ruido2[setdiff(1:nrow(train.sin.ruido2),out$remIdx),]
+
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.sin.ruido3,s=2)
+#summary(out, explicit=TRUE)
+train.sin.ruido4 <- train.sin.ruido3[setdiff(1:nrow(train.sin.ruido3),out$remIdx),]
+
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.sin.ruido4,s=2)
+#summary(out, explicit=TRUE)
+train.sin.ruido5 <- train.sin.ruido4[setdiff(1:nrow(train.sin.ruido4),out$remIdx),]
+
+numero.de.eliminadas <- nrow(train.original)-nrow(train.sin.ruido5)
+numero.de.eliminadas
+```
+Por lo que se han eliminado en total 1537 instancias al ser ruido, pero podrían ser más o menos, depende del número de pasadas que se decidan hacer. 
+
+Hagamos ahora un selección de características, con el mejor método hasta ahora, cfs, para crear un modelo y realizar una prueba.
+```{r}
+set.seed(1234)
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.sin.ruido5)
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
+```
+Siendo TOT_VEHICULOS_IMPLICADOS, la mejor característica, repitamos esto para obtener las 5 mejores, de forma que eliminamos la que mejor se obtiene. 
+```{r}
+set.seed(1234)
+train.wrapper.cfs = train.sin.ruido5[,-12]
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.wrapper.cfs)
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
+```
+Ahora obtenemos ZONA_AGRUPADA, CARRETERA y TRAZADO_NO_INTERSEC.
+
+```{r}
+set.seed(1234)
+train.wrapper.cfs = train.sin.ruido5[,-c(12,14,15,18)]
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.wrapper.cfs)
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
+```
+Obteniendo: TOT_HERIDOS_LEVES, ZONA, RED_CARRETERA, TIPO_VIA, TIPO_INTERSEC, PRIORIDAD, SUPERFICIE_CALZADA y ACERAS.
+
+Por lo tanto, ya que tenemos muchas características, vamos a probar el modelo con todas, salvo CARRETERA.
+```{r}
+train.deteccion.de.ruido <- train.sin.ruido5[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","PRIORIDAD","SUPERFICIE_CALZADA","ACERAS","TIPO_ACCIDENTE")]
+test.deteccion.de.ruido <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","PRIORIDAD","SUPERFICIE_CALZADA","ACERAS")]
+```
+Vamos a probar este modelo.
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r }
+set.seed(1234)
+ct16 <- ctree(TIPO_ACCIDENTE ~., train.deteccion.de.ruido)
+testPred16 <- predict(ct16, newdata = test.deteccion.de.ruido)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r }
+#ct16
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r }
+salida.modelo.16 <- as.matrix(testPred16)
+salida.modelo.16 <- cbind(c(1:(dim(salida.modelo.16)[1])), salida.modelo.16)
+colnames(salida.modelo.16) <- c("Id","Prediction")
+write.table(salida.modelo.16,file="predicciones/Prediccion16.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 13:00, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82365. Por lo que ha empeorado muy poco a la mejor obtenida por mi, cosa que no era de esperar ya que es el mismo modelo que el mejor obtenido, pero eliminando instancias de ruido.  
+
+![16 puntuación obtenida en Kaggel](imagenes/Puntuacion16.png "16Puntuacion")
 
 

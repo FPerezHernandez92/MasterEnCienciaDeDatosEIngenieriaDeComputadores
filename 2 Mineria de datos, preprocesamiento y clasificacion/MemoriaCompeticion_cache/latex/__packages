@@ -24,3 +24,8 @@ pROC
 class
 sgeostat
 mvoutlier
+randomForest
+ranger
+Boruta
+NoiseFiltersR
+plyr
