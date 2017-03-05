@@ -29,3 +29,6 @@ ranger
 Boruta
 NoiseFiltersR
 plyr
+AppliedPredictiveModeling
+e1071
+adabag
