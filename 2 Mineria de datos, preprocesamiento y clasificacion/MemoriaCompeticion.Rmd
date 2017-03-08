@@ -9,7 +9,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, cache = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE ,cache.path = "~/Dropbox/zMaster/zRStudio/zCacheRStudio/2MDPC/")
 #setwd("E:/0Descargas/JDownloader/2 Mineria de datos, preprocesamiento y clasificacion")
 setwd("~/Dropbox/zMaster/zRStudio/Master-en-Ciencia-De-Datos-e-Ingeniería-de-Computadores/2 Mineria de datos, preprocesamiento y clasificacion")
 library(party)
@@ -30,6 +30,8 @@ library(NoiseFiltersR)
 library(AppliedPredictiveModeling)
 library(e1071)
 library(adabag)
+library("foreach")
+library("doSNOW")
 ```
 
 # Introducción al problema y a Kaggel
@@ -1188,7 +1190,7 @@ salida.modelo.24 <- cbind(c(1:(dim(salida.modelo.24)[1])), salida.modelo.24)
 colnames(salida.modelo.24) <- c("Id","Prediction")
 write.table(salida.modelo.24,file="predicciones/Prediccion24.txt",sep=",",quote = F,row.names = F)
 ```
-El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las :, con un total de 3X personas entregadas, se ha quedado en la posición XX con una puntuación del 0..  
+El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las 10:54, con un total de 32 personas entregadas, se ha quedado en la posición 18 con una puntuación del 0.82089.  
 
 ![24 puntuación obtenida en Kaggel](imagenes/Puntuacion24.png "24Puntuacion")
 
@@ -1207,7 +1209,7 @@ salida.modelo.25 <- cbind(c(1:(dim(salida.modelo.25)[1])), salida.modelo.25)
 colnames(salida.modelo.25) <- c("Id","Prediction")
 write.table(salida.modelo.25,file="predicciones/Prediccion25.txt",sep=",",quote = F,row.names = F)
 ```
-El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las :, con un total de 3X personas entregadas, se ha quedado en la posición XX con una puntuación del 0..   
+El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las 10:56, con un total de 32 personas entregadas, se ha quedado en la posición 18 con una puntuación del 0.82306.   
 
 ![25 puntuación obtenida en Kaggel](imagenes/Puntuacion25.png "25Puntuacion")
 
@@ -1241,10 +1243,503 @@ salida.modelo.26 <- cbind(c(1:(dim(salida.modelo.26)[1])), salida.modelo.26)
 colnames(salida.modelo.26) <- c("Id","Prediction")
 write.table(salida.modelo.26,file="predicciones/Prediccion26.txt",sep=",",quote = F,row.names = F)
 ```
-El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las :, con un total de 3X personas entregadas, se ha quedado en la posición XX con una puntuación del 0..   
+El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las 10:58, con un total de 32 personas entregadas, se ha quedado en la posición 18 con una puntuación del 0.81891.   
 
 ![26 puntuación obtenida en Kaggel](imagenes/Puntuacion26.png "26Puntuacion")
 
+# Arboles de clasificación
+Aunque todos los modelos que he realizado en este guión han sido con este método, voy a realizarlo de nuevo para ver su puntuación y compararlo con los métodos anteriores, ya que he usado otro conjunto de variables. 
+```{r }
+set.seed(1234)
+ct27 <- ctree(TIPO_ACCIDENTE ~., train.mejor.resultado.sin.na)
+testPred27 <- predict(ct27, newdata = test.mejor.resultado.sin.na)
+```
+
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.27 <- as.matrix(testPred27)
+salida.modelo.27 <- cbind(c(1:(dim(salida.modelo.27)[1])), salida.modelo.27)
+colnames(salida.modelo.27) <- c("Id","Prediction")
+write.table(salida.modelo.27,file="predicciones/Prediccion27.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las 10:59, con un total de 32 personas entregadas, se ha quedado en la posición 18 con una puntuación del 0.82000.   
+
+![27 puntuación obtenida en Kaggel](imagenes/Puntuacion27.png "27Puntuacion")
+
+# Primeras Conclusiones
+Lo realizado hasta ahora ha sido lo visto durante el guión de preprocesamiento, reproduciendo lo visto en clase. A partir de ahora, voy a realizar nuevos modelos, usando lo visto hasta ahora, viendo como podemos conseguir el mejor modelo posible. Además el modelo que mejor resultado ha obtenido ha sido RandomForest.
+
+\newpage
+
+# Prueba de modelos
+## Prueba del primer modelo random forest 1000
+Como ya vimos, las variables con valores perdidos son: CARRETERA, ACOND_CALZADA, PRIORIDAD, VISIBILIDAD_RESTRINGIDA, OTRA_CIRCUNSTANCIA, ACERAS, DENSIDAD_CIRCULACION y MEDIDAS_ESPECIALES. 
+Además, a modo de resumen, voy a ver las variables que, en selección de características, tenían mayor importancia:
+
+Variable                   | Número de veces que ha sido seleccionada
+-------------------------- | -----------------------------------------
+ANIO                       | 2
+MES                        | 3
+HORA                       | 2
+DIASEMANA                  | 2
+PROVINCIA                  | 4
+COMUNIDAD_AUTONOMA         | 4
+TOT_VICTIMAS               | 2
+TOT_MUERTOS                | 1
+TOT_HERIDOS_LEVES          | 3
+TOT_VEHICULOS_IMPLICADOS   | 11
+ZONA                       | 8
+ZONA_AGRUPADA              | 8
+CARRETERA                  | 6
+RED_CARRETERA              | 5
+TIPO_VIA                   | 7
+TRAZADO_NO_INTERSEC        | 7
+TIPO_INTERSEC              | 6
+ACOND_CALZADA              | 1
+PRIORIDAD                  | 7
+SUPERFICE_CALZADA          | 5
+LUMINOSIDAD                | 2
+FACTORES_ATMOSFERICOS      | 3
+OTRA_CIRCUNSTANCIA         | 1
+ACERAS                     | 4
+DENSIDAD_CIRCULACION       | 2
+MEDIDAS_ESPECIALES         | 1
+
+Siendo, según esta clasificación las más importantes: 11 (TOT_VEHICULOS_IMPLICADOS), 8 (ZONA, ZONA_AGRUPADA), 7 (TIPO_VIA, TRAZADO_NO_INTERSEC,PRIORIDAD)
+Además, viendo como las variables CARRETERA y HORA, tienen más de 53 factores, vamos discretizarlas en menos valores. Por ejemplo, vemos la variable HORA actualmente:
+```{r}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+valores.hora <- train.original[,3]
+valores.hora.character <- as.character(valores.hora)
+valores.hora.cortados <- unlist(lapply(valores.hora.character,function(x) strtrim(x,2)))
+valores.hora.factor <- as.factor(valores.hora.cortados)
+levels(valores.hora.factor) <- c("0", "0", "1","1","10","11","12","13","14","15","16","17","18","19","2","2","20","21","22","23","3","3","4","4","5","5","6","6","7","7","8","8","9","9")
+train.modelos <- train.original
+train.modelos$HORA = valores.hora.factor
+valores.hora <- test.original[,3]
+valores.hora.character <- as.character(valores.hora)
+valores.hora.cortados <- unlist(lapply(valores.hora.character,function(x) strtrim(x,2)))
+valores.hora.factor <- as.factor(valores.hora.cortados)
+levels(valores.hora.factor) <- c("0", "0", "1","1","10","11","12","13","14","15","16","17","18","19","2","2","20","21","22","23","3","3","4","4","5","5","6","6","7","7","8","8","9","9")
+test.modelos <- test.original
+test.modelos$HORA = valores.hora.factor
+```
+Además, viendo que Carretera tiene 3268 niveles, y que no es fácilmente discretizable, voy a eliminarla del conjunto de datos.
+```{r}
+train.modelos$CARRETERA = NULL
+test.modelos$CARRETERA = NULL
+```
+Como tenemos varias variables que tienen valores perdidos, vamos a imputar estos valores.
+```{r}
+set.seed(1234)
+train.modelos.imputados <- mice::mice(train.modelos,m=5,method="pmm")
+train.imputados <- mice::complete(train.modelos.imputados)
+set.seed(1234)
+test.modelos.imputados <- mice::mice(test.modelos,m=5,method="pmm")
+test.imputados <- mice::complete(test.modelos.imputados)
+```
+Escribimos los datos imputados en un csv para que su carga sea mucho más rápida:
+```{r}
+write.csv(train.imputados,"datasetmodificados/train-imputados.csv")
+write.csv(test.imputados,"datasetmodificados/test-imputados.csv")
+```
+
+Vamos a ver que variables son las más importantes según random forest y boosting:
+Primero con RandomForest.
+```{r}
+set.seed(1234)
+modelo.random.forest.10 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados,ntree=10)
+print(modelo.random.forest.10)
+randomForest::importance(modelo.random.forest.10)>100
+plot(modelo.random.forest.10)
+```
+Por lo que las variables menos importantes serían: ISLA, TOT_MUERTOS y MEDIDAS_ESPECIALES. Vamos a probar un nuevo árbol sin estas variables.
+```{r}
+train.imputados2 <- train.imputados
+test.imputados2 <- test.imputados
+train.imputados2$ISLA=NULL
+train.imputados2$TOT_MUERTOS = NULL
+train.imputados2$MEDIDAS_ESPECIALES =NULL
+test.imputados2$ISLA=NULL
+test.imputados2$TOT_MUERTOS = NULL
+test.imputados2$MEDIDAS_ESPECIALES =NULL
+set.seed(1234)
+modelo.random.forest.50 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados2,ntree=50)
+print(modelo.random.forest.50)
+randomForest::importance(modelo.random.forest.50)
+plot(modelo.random.forest.50)
+```
+Tenemos varias variables que podrían ser eliminadas, pero de momento las vamos a dejar. Veamos que puntuación obtenemos en kaggel con un randomForest de 1000 arboles.
+```{r}
+set.seed(1234)
+modelo.random.forest.1000 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados2,ntree=1000)
+print(modelo.random.forest.1000)
+randomForest::importance(modelo.random.forest.1000)
+plot(modelo.random.forest.1000)
+predicciones.rf.1000 <- predict(modelo.random.forest.1000,newdata=test.imputados2)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.28 <- as.matrix(predicciones.rf.1000)
+salida.modelo.28 <- cbind(c(1:(dim(salida.modelo.28)[1])), salida.modelo.28)
+colnames(salida.modelo.28) <- c("Id","Prediction")
+write.table(salida.modelo.28,file="predicciones/Prediccion28.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las 15:04, con un total de 32 personas entregadas, se ha quedado en la posición 9 con una puntuación del 0.82859. Mi mejor puntuación obtenida hasta el momento.   
+
+![28 puntuación obtenida en Kaggel](imagenes/Puntuacion28.png "28Puntuacion")
 
 
-Notas: Tengo que subir la 24 y 25.
+## Prueba del segundo modelo random forest 1000
+
+```{r}
+rm(list=ls()) 
+train.imputados <- read.csv("datasetmodificados/train-imputados.csv")
+train.imputados$X = NULL
+test.imputados <- read.csv("datasetmodificados/test-imputados.csv")
+test.imputados$X = NULL
+```
+Vamos a probar a eliminar las variables: ISLA, TOT_MUERTOS, TOT_HERIDOS_GRAVES, ACERAS y MEDIDAS_ESPECIALES, es decir, dos más que anteriormente.
+```{r}
+train.imputados3 <- train.imputados
+test.imputados3 <- test.imputados
+train.imputados3$ISLA = NULL
+train.imputados3$TOT_MUERTOS=NULL
+train.imputados3$TOT_HERIDOS_GRAVES=NULL
+train.imputados3$ACERAS=NULL
+train.imputados3$MEDIDAS_ESPECIALES=NULL
+test.imputados3$ISLA = NULL
+test.imputados3$TOT_MUERTOS=NULL
+test.imputados3$TOT_HERIDOS_GRAVES=NULL
+test.imputados3$ACERAS=NULL
+test.imputados3$MEDIDAS_ESPECIALES=NULL
+```
+
+```{r}
+set.seed(1234)
+modelo.random.forest.1000.3 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados3,ntree=1000)
+print(modelo.random.forest.1000.3)
+randomForest::importance(modelo.random.forest.1000.3)
+plot(modelo.random.forest.1000.3)
+predicciones.rf.1000.3 <- predict(modelo.random.forest.1000.3,newdata=test.imputados3)
+```
+
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.29 <- as.matrix(predicciones.rf.1000.3)
+salida.modelo.29 <- cbind(c(1:(dim(salida.modelo.29)[1])), salida.modelo.29)
+colnames(salida.modelo.29) <- c("Id","Prediction")
+write.table(salida.modelo.29,file="predicciones/Prediccion29.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 07/03/2017 a las 13:17, con un total de 34 personas entregadas, se ha quedado en la posición 7 con una puntuación del 0.82909. Mi mejor puntuación hasta el momento.   
+
+![29 puntuación obtenida en Kaggel](imagenes/Puntuacion29.png "29Puntuacion")
+
+
+## Prueba del tercer modelo random forest 1000
+
+```{r}
+train.imputados4 <- train.imputados3
+test.imputados4 <- test.imputados3
+train.imputados4$VISIBILIDAD_RESTRINGIDA=NULL
+train.imputados4$OTRA_CIRCUNSTANCIA=NULL
+train.imputados4$DENSIDAD_CIRCULACION=NULL
+test.imputados4$VISIBILIDAD_RESTRINGIDA=NULL
+test.imputados4$OTRA_CIRCUNSTANCIA=NULL
+test.imputados4$DENSIDAD_CIRCULACION=NULL
+```
+
+```{r}
+write.csv(train.imputados4,"datasetmodificados/train-imputados4.csv",row.names = FALSE)
+write.csv(test.imputados4,"datasetmodificados/test-imputados4.csv",row.names = FALSE)
+```
+
+```{r}
+set.seed(1234)
+modelo.random.forest.1000.4 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados4,ntree=1000)
+print(modelo.random.forest.1000.4)
+randomForest::importance(modelo.random.forest.1000.4)
+plot(modelo.random.forest.1000.4)
+predicciones.rf.1000.4 <- predict(modelo.random.forest.1000.4,newdata=test.imputados4)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.30 <- as.matrix(predicciones.rf.1000.4)
+salida.modelo.30 <- cbind(c(1:(dim(salida.modelo.30)[1])), salida.modelo.30)
+colnames(salida.modelo.30) <- c("Id","Prediction")
+write.table(salida.modelo.30,file="predicciones/Prediccion30.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 07/03/2017 a las 16:17, con un total de 34 personas entregadas, se ha quedado en la posición 5 con una puntuación del 0.82958. La mejor obtenida hasta el momento. 
+
+![30 puntuación obtenida en Kaggel](imagenes/Puntuacion30.png "30Puntuacion")
+
+
+## Prueba del cuarto modelo random forest 1000
+
+```{r}
+train.imputados5 <- train.imputados4
+test.imputados5 <- test.imputados4
+train.imputados5$FACTORES_ATMOSFERICOS   =NULL
+train.imputados5$TOT_VICTIMAS   =NULL
+test.imputados5$FACTORES_ATMOSFERICOS  =NULL
+test.imputados5$TOT_VICTIMAS  =NULL
+```
+
+```{r}
+set.seed(1234)
+modelo.random.forest.1000.5 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados5,ntree=1000)
+print(modelo.random.forest.1000.5)
+randomForest::importance(modelo.random.forest.1000.5)
+plot(modelo.random.forest.1000.5)
+predicciones.rf.1000.5 <- predict(modelo.random.forest.1000.5,newdata=test.imputados5)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.31 <- as.matrix(predicciones.rf.1000.5)
+salida.modelo.31 <- cbind(c(1:(dim(salida.modelo.31)[1])), salida.modelo.31)
+colnames(salida.modelo.31) <- c("Id","Prediction")
+write.table(salida.modelo.31,file="predicciones/Prediccion31.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 07/03/2017 a las 16:46, con un total de 34 personas entregadas, se ha quedado en la posición 5 con una puntuación del 0.82928. 
+
+![31 puntuación obtenida en Kaggel](imagenes/Puntuacion31.png "31Puntuacion")
+
+
+## Prueba del quinto modelo random forest 1000
+
+```{r}
+train.imputados6 <- train.imputados5
+test.imputados6 <- test.imputados5
+train.imputados6$RED_CARRETERA=NULL
+train.imputados6$SUPERFICIE_CALZADA=NULL
+train.imputados6$LUMINOSIDAD=NULL
+test.imputados6$RED_CARRETERA=NULL
+test.imputados6$SUPERFICIE_CALZADA=NULL
+test.imputados6$LUMINOSIDAD=NULL
+```
+
+
+```{r}
+set.seed(1234)
+modelo.random.forest.1000.6 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados6,ntree=1000)
+print(modelo.random.forest.1000.6)
+randomForest::importance(modelo.random.forest.1000.6)
+plot(modelo.random.forest.1000.6)
+predicciones.rf.1000.6 <- predict(modelo.random.forest.1000.6,newdata=test.imputados6)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.32 <- as.matrix(predicciones.rf.1000.6)
+salida.modelo.32 <- cbind(c(1:(dim(salida.modelo.32)[1])), salida.modelo.32)
+colnames(salida.modelo.32) <- c("Id","Prediction")
+write.table(salida.modelo.32,file="predicciones/Prediccion32.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 07/03/2017 a las 17:08, con un total de 34 personas entregadas, se ha quedado en la posición 5 con una puntuación del 0.82523. 
+
+![32 puntuación obtenida en Kaggel](imagenes/Puntuacion32.png "32Puntuacion")
+
+
+## Prueba del sexto modelo random forest 1000
+
+```{r}
+train.imputados7 <- train.imputados6
+test.imputados7 <- test.imputados6
+train.imputados7$TOT_HERIDOS_LEVES=NULL
+train.imputados7$TIPO_INTERSEC=NULL
+train.imputados7$ACOND_CALZADA=NULL
+test.imputados7$TOT_HERIDOS_LEVES=NULL
+test.imputados7$TIPO_INTERSEC=NULL
+test.imputados7$ACOND_CALZADA=NULL
+```
+
+```{r}
+set.seed(1234)
+modelo.random.forest.1000.7 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados7,ntree=1000)
+print(modelo.random.forest.1000.7)
+randomForest::importance(modelo.random.forest.1000.7)
+plot(modelo.random.forest.1000.7)
+predicciones.rf.1000.7 <- predict(modelo.random.forest.1000.7,newdata=test.imputados7)
+```
+
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.33 <- as.matrix(predicciones.rf.1000.7)
+salida.modelo.33 <- cbind(c(1:(dim(salida.modelo.33)[1])), salida.modelo.33)
+colnames(salida.modelo.33) <- c("Id","Prediction")
+write.table(salida.modelo.33,file="predicciones/Prediccion33.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 07/03/2017 a las 17:31, con un total de 34 personas entregadas, se ha quedado en la posición 5 con una puntuación del 0.82444. 
+
+![33 puntuación obtenida en Kaggel](imagenes/Puntuacion33.png "33Puntuacion")
+
+
+## Prueba del primer modelo random forest multihebra
+
+Vamos a probar un random forest multihebra para ver si mejoramos los resultados:
+```{r}
+set.seed(1234)
+registerDoSNOW(makeCluster(8, type="SOCK"))
+
+rf <- foreach(ntree = rep(250, 8), .combine = combine, .packages = "randomForest") %dopar% randomForest(train.imputados4[,-21], train.imputados4[,21], ntree = ntree)
+rf
+randomForest::importance(rf)
+predicciones.rf <- predict(rf,newdata=test.imputados4)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.34 <- as.matrix(predicciones.rf)
+salida.modelo.34 <- cbind(c(1:(dim(salida.modelo.34)[1])), salida.modelo.34)
+colnames(salida.modelo.34) <- c("Id","Prediction")
+write.table(salida.modelo.34,file="predicciones/Prediccion34.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 08/03/2017 a las 08:55, con un total de 34 personas entregadas, se ha quedado en la posición 4 con una puntuación del 0.82978. La mejor obtenida hasta el momento.  
+
+![34 puntuación obtenida en Kaggel](imagenes/Puntuacion34.png "34Puntuacion")
+
+
+## Prueba del primer modelo random forest 5000
+
+Probemos el mejor modelo obtenido pero con 5000 árboles en lugar de 1000.
+```{r}
+set.seed(1234)
+modelo.random.forest.5000.4 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.imputados4,ntree=5000)
+print(modelo.random.forest.5000.4)
+randomForest::importance(modelo.random.forest.5000.4)
+plot(modelo.random.forest.5000.4)
+predicciones.rf.5000.4 <- predict(modelo.random.forest.5000.4,newdata=test.imputados4)
+```
+
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.35 <- as.matrix(predicciones.rf.5000.4)
+salida.modelo.35 <- cbind(c(1:(dim(salida.modelo.35)[1])), salida.modelo.35)
+colnames(salida.modelo.35) <- c("Id","Prediction")
+write.table(salida.modelo.35,file="predicciones/Prediccion35.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 08/03/2017 a las 08:55, con un total de 34 personas entregadas, se ha quedado en la posición 4 con una puntuación del 0.82918. 
+
+![35 puntuación obtenida en Kaggel](imagenes/Puntuacion35.png "35Puntuacion")
+
+
+## Prueba del segundo modelo random forest multihebra
+
+Ya que tenemos un muy buen modelo, vamos a probar a eliminar algo de ruido para ver el comportamiento de nuestro modelo. 
+```{r}
+rm(list=ls()) 
+train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
+test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
+```
+Eliminamos ruido:
+```{r}
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.imputados4,s=2)
+identical(out$cleanData, train.imputados4[setdiff(1:nrow(train.imputados4),out$remIdx),])
+train.sin.ruido1 <- train.imputados4[setdiff(1:nrow(train.imputados4),out$remIdx),]
+```
+Veamos como funciona nuestro nuevo dataset sin ruido con el modelo.
+```{r}
+set.seed(1234)
+registerDoSNOW(makeCluster(8, type="SOCK"))
+
+rf.sin.ruido <- foreach(ntree = rep(250, 8), .combine = combine, .packages = "randomForest") %dopar% randomForest(train.sin.ruido1[,-21], train.sin.ruido1[,21], ntree = ntree)
+rf.sin.ruido
+randomForest::importance(rf.sin.ruido)
+predicciones.rf.sin.ruido <- predict(rf.sin.ruido,newdata=test.imputados4)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.36 <- as.matrix(predicciones.rf.sin.ruido)
+salida.modelo.36 <- cbind(c(1:(dim(salida.modelo.36)[1])), salida.modelo.36)
+colnames(salida.modelo.36) <- c("Id","Prediction")
+write.table(salida.modelo.36,file="predicciones/Prediccion36.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 08/03/2017 a las 11:52, con un total de 36 personas entregadas, se ha quedado en la posición 4 con una puntuación del 0.82177.  
+
+![36 puntuación obtenida en Kaggel](imagenes/Puntuacion36.png "36Puntuacion")
+
+## Prueba del tercer modelo random forest multihebra
+Como la detección de ruido no ha funcionado correctamente, vamos a probar a eliminar una nueva variable del mejor dataset que tenemos hasta ahora. Esta variable será TOT_VICTIMAS al ser la siguiente variable con menos importancia según el randomforest obtenido con 5000 árboles.
+
+```{r}
+rm(list=ls()) 
+train.multihebra <- read.csv("datasetmodificados/train-imputados4.csv")
+test.multihebra <- read.csv("datasetmodificados/test-imputados4.csv")
+train.multihebra$TOT_VICTIMAS=NULL
+test.multihebra$TOT_VICTIMAS=NULL
+```
+Veamos como funciona en este modelo:
+```{r}
+set.seed(1234)
+registerDoSNOW(makeCluster(8, type="SOCK"))
+rf.1 <- foreach(ntree = rep(250, 8), .combine = combine, .packages = "randomForest") %dopar% randomForest(train.multihebra[,-20], train.multihebra[,20], ntree = ntree)
+rf.1
+randomForest::importance(rf.1)
+predicciones.rf.1 <- predict(rf.1,newdata=test.multihebra)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.37 <- as.matrix(predicciones.rf.1)
+salida.modelo.37 <- cbind(c(1:(dim(salida.modelo.37)[1])), salida.modelo.37)
+colnames(salida.modelo.37) <- c("Id","Prediction")
+write.table(salida.modelo.37,file="predicciones/Prediccion37.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 08/03/2017 a las 12:47, con un total de 36 personas entregadas, se ha quedado en la posición 4 con una puntuación del 0.82928.  
+
+![37 puntuación obtenida en Kaggel](imagenes/Puntuacion37.png "37Puntuacion")
+
+## Prueba del cuarto modelo random forest multihebra
+```{r}
+rm(list=ls()) 
+train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
+test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
+```
+Vamos a probar un random forest multihebra con más árboles para ver si mejoramos los resultados:
+```{r}
+set.seed(1234)
+registerDoSNOW(makeCluster(8, type="SOCK"))
+
+rf2 <- foreach(ntree = rep(500, 8), .combine = combine, .packages = "randomForest") %dopar% randomForest(train.imputados4[,-21], train.imputados4[,21], ntree = ntree)
+rf2
+randomForest::importance(rf2)
+predicciones.rf2 <- predict(rf2,newdata=test.imputados4)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.38 <- as.matrix(predicciones.rf2)
+salida.modelo.38 <- cbind(c(1:(dim(salida.modelo.38)[1])), salida.modelo.38)
+colnames(salida.modelo.38) <- c("Id","Prediction")
+write.table(salida.modelo.38,file="predicciones/Prediccion38.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 08/03/2017 a las 08:55, con un total de 34 personas entregadas, se ha quedado en la posición 4 con una puntuación del 0.82978. La mejor obtenida hasta el momento.  
+
+![38 puntuación obtenida en Kaggel](imagenes/Puntuacion38.png "38Puntuacion")
+
+## Prueba del quinto modelo random forest multihebra
+```{r}
+rm(list=ls()) 
+train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
+test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
+```
+Vamos a probar un random forest multihebra con más árboles para ver si mejoramos los resultados:
+```{r}
+set.seed(1234)
+registerDoSNOW(makeCluster(8, type="SOCK"))
+
+rf3 <- foreach(ntree = rep(750, 8), .combine = combine, .packages = "randomForest") %dopar% randomForest(train.imputados4[,-21], train.imputados4[,21], ntree = ntree)
+rf3
+randomForest::importance(rf3)
+predicciones.rf3 <- predict(rf3,newdata=test.imputados4)
+```
+Veamos la puntuación en kaggel
+```{r}
+salida.modelo.39 <- as.matrix(predicciones.rf3)
+salida.modelo.39 <- cbind(c(1:(dim(salida.modelo.39)[1])), salida.modelo.39)
+colnames(salida.modelo.39) <- c("Id","Prediction")
+write.table(salida.modelo.39,file="predicciones/Prediccion39.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 08/03/2017 a las 08:55, con un total de 34 personas entregadas, se ha quedado en la posición 4 con una puntuación del 0.82978. La mejor obtenida hasta el momento.  
+
+![39 puntuación obtenida en Kaggel](imagenes/Puntuacion39.png "39Puntuacion")
+
