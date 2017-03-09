@@ -32,3 +32,5 @@ foreach
 iterators
 snow
 doSNOW
+sgeostat
+mvoutlier
