@@ -80,10 +80,9 @@ colnames(salida.primer.modelo) <- c("Id","Prediction")
 write.table(salida.primer.modelo,file="predicciones/PrimeraPrediccion.txt",sep=",",quote = F,row.names = F)
 ```
 
-Por lo que ya tenemos un fichero con la salida del conjunto de test. Lo único que tendremos que modificar es la primera linea del archivo para añadir "Id, Prediction".
+1 Por lo que ya tenemos un fichero con la salida del conjunto de test. Lo único que tendremos que modificar es la primera linea del archivo para añadir "Id, Prediction".
 El resultado de este primer modelo para la competición de Kaggel, subido el 11/02/2017 a las 19:54, con un total de 5 personas entregadas, se ha quedado en la posición 3 con una puntuación del 0.73246. 
 
-![Primera puntuación obtenida en Kaggel](imagenes/PrimeraPuntuacion.jpg "PrimeraPuntuacion")
 
 # Análisis del dataset
 Una vez realizada la primera prueba en Kaggel, vamos a analizar con detalle el dataset que nos han dado.
@@ -152,9 +151,8 @@ colnames(salida.segundo.modelo) <- c("Id","Prediction")
 write.table(salida.segundo.modelo,file="predicciones/SegundaPrediccion.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 17/02/2017 a las 17:51, con un total de 14 personas entregadas, se ha quedado en la posición 9 con una puntuación del 0.81891. 
+2 El resultado de este modelo para la competición de Kaggel, subido el 17/02/2017 a las 17:51, con un total de 14 personas entregadas, se ha quedado en la posición 9 con una puntuación del 0.81891. 
 
-![Segunda puntuación obtenida en Kaggel](imagenes/SegundaPuntuacion.png "SegundaPuntuacion")
 
 # Vusualización del dataset
 Como no se ha hecho antes, y debería ser uno de los primeros pasos a realizar, vamos a realizar una visualización del dataset. 
@@ -288,9 +286,8 @@ colnames(salida.tercer.modelo) <- c("Id","Prediction")
 write.table(salida.tercer.modelo,file="predicciones/TerceraPrediccion.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 19/02/2017 a las 17:42, con un total de 14 personas entregadas, se ha quedado en la posición 9 con una puntuación del 0.81753. Bajando muy poco con respecto a la anterior puntuación.  
+3 El resultado de este modelo para la competición de Kaggel, subido el 19/02/2017 a las 17:42, con un total de 14 personas entregadas, se ha quedado en la posición 9 con una puntuación del 0.81753. Bajando muy poco con respecto a la anterior puntuación.  
 
-![Tercera puntuación obtenida en Kaggel](imagenes/TerceraPuntuacion.png "TerceraPuntuacion")
 
 # Detección de anomalias
 Veamos como detectar valores anómalos en nuestros datos.
@@ -409,9 +406,8 @@ colnames(salida.modelo.4) <- c("Id","Prediction")
 write.table(salida.modelo.4,file="predicciones/Prediccion4.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 19/02/2017 a las 20:12, con un total de 16 personas entregadas, se ha quedado en la posición 10 con una puntuación del 0.81753. Bajando muy poco con respecto a la anterior puntuación.  
+4 El resultado de este modelo para la competición de Kaggel, subido el 19/02/2017 a las 20:12, con un total de 16 personas entregadas, se ha quedado en la posición 10 con una puntuación del 0.81753. Bajando muy poco con respecto a la anterior puntuación.  
 
-![Cuarta puntuación obtenida en Kaggel](imagenes/Puntuacion4.png "CuartaPuntuacion")
 
 # Transformación de los datos
 Tal y como se vio en el guión de prácticas en el punto 7, vamos a aplicar la transformación para ver que tal nos funciona.
@@ -448,9 +444,8 @@ colnames(salida.modelo.5) <- c("Id","Prediction")
 write.table(salida.modelo.5,file="predicciones/Prediccion5.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 20/02/2017 a las 13:15, con un total de 18 personas entregadas, se ha quedado en la posición 12 con una puntuación del 0.55147. Bajando mucho con respecto a la anterior puntuación, por lo que esta transformación no la tendremos en cuenta.  
+5 El resultado de este modelo para la competición de Kaggel, subido el 20/02/2017 a las 13:15, con un total de 18 personas entregadas, se ha quedado en la posición 12 con una puntuación del 0.55147. Bajando mucho con respecto a la anterior puntuación, por lo que esta transformación no la tendremos en cuenta.  
 
-![Quinta puntuación obtenida en Kaggel](imagenes/Puntuacion5.png "QuintaPuntuacion")
 
 # Discretización
 Para este conjunto de datos no se realiza discretización ya que no tenemos variables continuas como para poder discretizarlas. 
@@ -513,9 +508,8 @@ colnames(salida.modelo.6) <- c("Id","Prediction")
 write.table(salida.modelo.6,file="predicciones/Prediccion6.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 22/02/2017 a las 13:20, con un total de 21 personas entregadas, se ha quedado en la posición 13 con una puntuación del 0.82089. Mejorando a la que ya se tenia anteriormente, por lo que vemos que esta selección de características ha funcionado correctamente.  
+6 El resultado de este modelo para la competición de Kaggel, subido el 22/02/2017 a las 13:20, con un total de 21 personas entregadas, se ha quedado en la posición 13 con una puntuación del 0.82089. Mejorando a la que ya se tenia anteriormente, por lo que vemos que esta selección de características ha funcionado correctamente.  
 
-![Sexta puntuación obtenida en Kaggel](imagenes/Puntuacion6.png "SextaPuntuacion")
 
 ### Aproximación filter: correlation
 Busca los pesos de atributos continuos en base a medidas de correlación. Por lo tanto esta aproximación no podremos realizarla al tener la variable clase no numérica.  
@@ -579,9 +573,8 @@ colnames(salida.modelo.7) <- c("Id","Prediction")
 write.table(salida.modelo.7,file="predicciones/Prediccion7.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 22/02/2017 a las 14:00, con un total de 22 personas entregadas, se ha quedado en la posición 14 con una puntuación del 0.82227. Mejorando a la que ya se tenia anteriormente, por lo que vemos que esta selección de características ha funcionado mejor.  
+7 El resultado de este modelo para la competición de Kaggel, subido el 22/02/2017 a las 14:00, con un total de 22 personas entregadas, se ha quedado en la posición 14 con una puntuación del 0.82227. Mejorando a la que ya se tenia anteriormente, por lo que vemos que esta selección de características ha funcionado mejor.  
 
-![7 puntuación obtenida en Kaggel](imagenes/Puntuacion7.png "7Puntuacion")
 
 ### Aproximación filter: oneR
 Método simple de cálculo de pesos para atributos discretos mediante el uso de reglas de asociación con un sólo término en el antecedente.
@@ -620,9 +613,8 @@ colnames(salida.modelo.8) <- c("Id","Prediction")
 write.table(salida.modelo.8,file="predicciones/Prediccion8.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 23/02/2017 a las 12:51, con un total de 22 personas entregadas, se ha quedado en la posición 14 con una puntuación del 0.81891. La cual no mejora a la mejor que ya teníamos.  
+8 El resultado de este modelo para la competición de Kaggel, subido el 23/02/2017 a las 12:51, con un total de 22 personas entregadas, se ha quedado en la posición 14 con una puntuación del 0.81891. La cual no mejora a la mejor que ya teníamos.  
 
-![8 puntuación obtenida en Kaggel](imagenes/Puntuacion8.png "8Puntuacion")
 
 ### Aproximación filter: relief
 Algoritmo de búsqueda de pesos de atributos continuos y discretos en base a la distancia entre instancias.
@@ -665,9 +657,8 @@ colnames(salida.modelo.9) <- c("Id","Prediction")
 write.table(salida.modelo.9,file="predicciones/Prediccion9.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 28/02/2017 a las 11:51, con un total de 26 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.59119. La cual empeora mucho a lo que ya se tenia, por lo que no es una buena selección de características.  
+9 El resultado de este modelo para la competición de Kaggel, subido el 28/02/2017 a las 11:51, con un total de 26 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.59119. La cual empeora mucho a lo que ya se tenia, por lo que no es una buena selección de características.  
 
-![9 puntuación obtenida en Kaggel](imagenes/Puntuacion9.png "9Puntuacion")
 
 
 
@@ -729,9 +720,8 @@ colnames(salida.modelo.10) <- c("Id","Prediction")
 write.table(salida.modelo.10,file="predicciones/Prediccion10.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 28/02/2017 a las 12:17, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82395. Por lo que se ha mejorado a la mejor obtenida por mi hasta el momento.  
+10 El resultado de este modelo para la competición de Kaggel, subido el 28/02/2017 a las 12:17, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82395. Por lo que se ha mejorado a la mejor obtenida por mi hasta el momento.  
 
-![10 puntuación obtenida en Kaggel](imagenes/Puntuacion10.png "10Puntuacion")
 
 
 ### Aproximación wrapper: consistency
@@ -775,9 +765,8 @@ colnames(salida.modelo.11) <- c("Id","Prediction")
 write.table(salida.modelo.11,file="predicciones/Prediccion11.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 01/03/2017 a las 16:56, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82237. Empeorando un poco a la mejor actual.  
+11 El resultado de este modelo para la competición de Kaggel, subido el 01/03/2017 a las 16:56, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82237. Empeorando un poco a la mejor actual.  
 
-![11 puntuación obtenida en Kaggel](imagenes/Puntuacion11.png "11Puntuacion")
 
 
 ### Aproximación embedded: random.forest.importance
@@ -830,9 +819,8 @@ colnames(salida.modelo.12) <- c("Id","Prediction")
 write.table(salida.modelo.12,file="predicciones/Prediccion12.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 01/03/2017 a las 16:32, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82326. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
+12 El resultado de este modelo para la competición de Kaggel, subido el 01/03/2017 a las 16:32, con un total de 26 personas entregadas, se ha quedado en la posición 15 con una puntuación del 0.82326. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
 
-![12 puntuación obtenida en Kaggel](imagenes/Puntuacion12.png "12Puntuacion")
 
 ## Paquete caret
 Para este apartado comenzaremos con los dataset originales.
@@ -883,9 +871,8 @@ colnames(salida.modelo.13) <- c("Id","Prediction")
 write.table(salida.modelo.13,file="predicciones/Prediccion13.txt",sep=",",quote = F,row.names = F)
 ```
 
-El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 12:44, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82286. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
+13 El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 12:44, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82286. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
 
-![13 puntuación obtenida en Kaggel](imagenes/Puntuacion13.png "13Puntuacion")
 
 
 ## Paquete Boruta
@@ -941,12 +928,370 @@ salida.modelo.14 <- cbind(c(1:(dim(salida.modelo.14)[1])), salida.modelo.14)
 colnames(salida.modelo.14) <- c("Id","Prediction")
 write.table(salida.modelo.14,file="predicciones/Prediccion14.txt",sep=",",quote = F,row.names = F)
 ```
-El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 12:47, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82326. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
-
-![14 puntuación obtenida en Kaggel](imagenes/Puntuacion14.png "14Puntuacion")
+14 El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 12:47, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82326. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
 
 
 
+### Combinación con random forest
+```{r 15a}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+```
+
+```{r 15b}
+train.boruta.random.forest <- train.sin.na[,-3]
+set.seed(1234)
+Bor.ran <- Boruta(TIPO_ACCIDENTE~.,data=train.boruta.random.forest,doTrace=2)
+```
+```{r 15c}
+model1 <- randomForest(TIPO_ACCIDENTE~.,data=train.boruta.random.forest)
+model1
+```
+```{r 15d}
+model2 <- randomForest(train.boruta.random.forest[,getSelectedAttributes(Bor.ran)],train.boruta.random.forest$TIPO_ACCIDENTE)
+model2
+```
+```{r 15e}
+Bor.ran
+```
+```{r 15f}
+plot(Bor.ran)
+```
+
+Vemos como el atributo que nos indica que se puede eliminar es ISLA.
+Probemos el modelo sin esta variable.
+```{r 15g}
+train.boruta.random.forest <- train.boruta.random.forest[,-6]
+test.boruta.random.forest <- test.sin.na[,-3]
+test.boruta.random.forest <- test.boruta.random.forest[,-6]
+```
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r 15h}
+set.seed(1234)
+ct15 <- ctree(TIPO_ACCIDENTE ~., train.boruta.random.forest)
+testPred15 <- predict(ct15, newdata = test.boruta.random.forest)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r 15i}
+#ct15
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r 15j}
+salida.modelo.15 <- as.matrix(testPred15)
+salida.modelo.15 <- cbind(c(1:(dim(salida.modelo.15)[1])), salida.modelo.15)
+colnames(salida.modelo.15) <- c("Id","Prediction")
+write.table(salida.modelo.15,file="predicciones/Prediccion15.txt",sep=",",quote = F,row.names = F)
+```
+15 El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 12:51, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82286. Por lo que ha empeorado muy poco a la mejor obtenida por mi.  
+
+
+
+# Detección de ruido
+```{r 16a}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+```
+Vamos a probar este método. 
+```{r 16b}
+out <- IPF(TIPO_ACCIDENTE~., data=train.original,s=2)
+#summary(out, explicit=TRUE)
+identical(out$cleanData, train.original[setdiff(1:nrow(train.original),out$remIdx),])
+train.sin.ruido1 <- train.original[setdiff(1:nrow(train.original),out$remIdx),]
+```
+```{r 16c}
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.sin.ruido1,s=2)
+#summary(out, explicit=TRUE)
+train.sin.ruido2 <- train.sin.ruido1[setdiff(1:nrow(train.sin.ruido1),out$remIdx),]
+```
+```{r 16d}
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.sin.ruido2,s=2)
+#summary(out, explicit=TRUE)
+train.sin.ruido3 <- train.sin.ruido2[setdiff(1:nrow(train.sin.ruido2),out$remIdx),]
+```
+```{r 16e}
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.sin.ruido3,s=2)
+#summary(out, explicit=TRUE)
+train.sin.ruido4 <- train.sin.ruido3[setdiff(1:nrow(train.sin.ruido3),out$remIdx),]
+```
+```{r 16f}
+set.seed(1234)
+out <- IPF(TIPO_ACCIDENTE~., data=train.sin.ruido4,s=2)
+#summary(out, explicit=TRUE)
+train.sin.ruido5 <- train.sin.ruido4[setdiff(1:nrow(train.sin.ruido4),out$remIdx),]
+```
+```{r 16g}
+numero.de.eliminadas <- nrow(train.original)-nrow(train.sin.ruido5)
+numero.de.eliminadas
+```
+
+Por lo que se han eliminado en total 1537 instancias al ser ruido, pero podrían ser más o menos, depende del número de pasadas que se decidan hacer. 
+
+Hagamos ahora un selección de características, con el mejor método hasta ahora, cfs, para crear un modelo y realizar una prueba.
+```{r 16h}
+set.seed(1234)
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.sin.ruido5)
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
+```
+
+Siendo TOT_VEHICULOS_IMPLICADOS, la mejor característica, repitamos esto para obtener las 5 mejores, de forma que eliminamos la que mejor se obtiene. 
+```{r 16i}
+set.seed(1234)
+train.wrapper.cfs = train.sin.ruido5[,-12]
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.wrapper.cfs)
+```
+```{r 16j}
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
+```
+
+Ahora obtenemos ZONA_AGRUPADA, CARRETERA y TRAZADO_NO_INTERSEC.
+
+```{r 16k}
+set.seed(1234)
+train.wrapper.cfs = train.sin.ruido5[,-c(12,14,15,18)]
+subset <- FSelector::cfs(TIPO_ACCIDENTE~.,train.wrapper.cfs)
+```
+```{r 16l}
+el.mejor.segun.cfs <- as.simple.formula(subset, "TIPO_ACCIDENTE")
+el.mejor.segun.cfs
+```
+
+Obteniendo: TOT_HERIDOS_LEVES, ZONA, RED_CARRETERA, TIPO_VIA, TIPO_INTERSEC, PRIORIDAD, SUPERFICIE_CALZADA y ACERAS.
+
+Por lo tanto, ya que tenemos muchas características, vamos a probar el modelo con todas, salvo CARRETERA.
+```{r 16m}
+train.deteccion.de.ruido <- train.sin.ruido5[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","PRIORIDAD","SUPERFICIE_CALZADA","ACERAS","TIPO_ACCIDENTE")]
+test.deteccion.de.ruido <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","PRIORIDAD","SUPERFICIE_CALZADA","ACERAS")]
+```
+
+Vamos a probar este modelo.
+
+### Prueba del modelo
+Hagamos por lo tanto una prueba.
+```{r 16n}
+set.seed(1234)
+ct16 <- ctree(TIPO_ACCIDENTE ~., train.deteccion.de.ruido)
+testPred16 <- predict(ct16, newdata = test.deteccion.de.ruido)
+```
+Por lo que ya tenemos el conjunto de test predicho. Además el árbol creado tendría la siguiente estructura:
+```{r 16o}
+#ct16
+```
+Vamos a escribir la salida del modelo para ver su puntuación en Kaggel.
+```{r 16p}
+salida.modelo.16 <- as.matrix(testPred16)
+salida.modelo.16 <- cbind(c(1:(dim(salida.modelo.16)[1])), salida.modelo.16)
+colnames(salida.modelo.16) <- c("Id","Prediction")
+write.table(salida.modelo.16,file="predicciones/Prediccion16.txt",sep=",",quote = F,row.names = F)
+```
+
+16 El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017 a las 13:00, con un total de 28 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82365. Por lo que ha empeorado muy poco a la mejor obtenida por mi, cosa que no era de esperar ya que es el mismo modelo que el mejor obtenido, pero eliminando instancias de ruido.  
+
+
+
+# Modelo SVM Radial
+Limpiamos el espacio de trabajo
+```{r 17a}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+train.mejor.resultado.sin.na <- train.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","SUPERFICIE_CALZADA","TIPO_ACCIDENTE")]
+test.mejor.resultado.sin.na <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","SUPERFICIE_CALZADA")]
+```
+
+Vamos a aplicar el modelo SVM Radial a nuestros datos.
+```{r 17b}
+set.seed(1234)
+modelo.svm.radial <- train(TIPO_ACCIDENTE ~., data = train.mejor.resultado.sin.na, methods = "svmRadial")
+predicciciones.svm.radial <- predict(modelo.svm.radial, test.mejor.resultado.sin.na)
+```
+
+Veamos la puntuación en kaggel
+```{r 17c}
+salida.modelo.17 <- as.matrix(predicciciones.svm.radial)
+salida.modelo.17 <- cbind(c(1:(dim(salida.modelo.17)[1])), salida.modelo.17)
+colnames(salida.modelo.17) <- c("Id","Prediction")
+write.table(salida.modelo.17,file="predicciones/Prediccion17.txt",sep=",",quote = F,row.names = F)
+```
+
+17 El resultado de este modelo para la competición de Kaggel, subido el 04/03/2017 a las 16:28, con un total de 29 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.81762.   
+
+
+
+Si lo que queremos es preprocesar los datos con un centrado y escalado
+```{r 18a}
+set.seed(1234)
+modelo.svm.radial2 <- train(TIPO_ACCIDENTE ~., data = train.mejor.resultado.sin.na, methods = "svmRadial", preProc = c("center", "scale"))
+predicciciones.svm.radial2 <- predict(modelo.svm.radial2, test.mejor.resultado.sin.na)
+```
+
+Veamos la puntuación en kaggel
+```{r 18b}
+salida.modelo.18 <- as.matrix(predicciciones.svm.radial2)
+salida.modelo.18 <- cbind(c(1:(dim(salida.modelo.18)[1])), salida.modelo.18)
+colnames(salida.modelo.18) <- c("Id","Prediction")
+write.table(salida.modelo.18,file="predicciones/Prediccion18.txt",sep=",",quote = F,row.names = F)
+```
+
+18 El resultado de este modelo para la competición de Kaggel, subido el 04/03/2017 a las 17:43, con un total de 29 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.81822.   
+
+
+
+
+
+Este método tiene un parámetro de coste que regula el coste asociado a los errores de predicción: las diferencias entre el valor predicho y el real. Es posible evaluar diferentes valores de coste directamente:
+```{r 19a}
+set.seed(1234)
+modelo.svm.radial3 <- train(TIPO_ACCIDENTE ~., data = train.mejor.resultado.sin.na, methods = "svmRadial", preProc = c("center", "scale"), tuneLength = 10)
+predicciciones.svm.radial3 <- predict(modelo.svm.radial3, test.mejor.resultado.sin.na)
+```
+Veamos la puntuación en kaggel
+```{r 19b}
+salida.modelo.19 <- as.matrix(predicciciones.svm.radial3)
+salida.modelo.19 <- cbind(c(1:(dim(salida.modelo.19)[1])), salida.modelo.19)
+colnames(salida.modelo.19) <- c("Id","Prediction")
+write.table(salida.modelo.19,file="predicciones/Prediccion19.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 05/03/2017 a las 12:15, con un total de 31 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82256.   
+
+![19 puntuación obtenida en Kaggel](imagenes/Puntuacion19.png "19Puntuacion")
+
+También se puede modificar esta llamada para que se utilicen diferentes particionados. Realicemos 2 repeticiones de validación cruzada con k = 10. 
+```{r 20a}
+set.seed(1234)
+modelo.svm.radial4 <- train(TIPO_ACCIDENTE ~., data = train.mejor.resultado.sin.na, methods = "svmRadial", preProc = c("center", "scale"), tuneLength = 10, trControl = trainControl(method = "repeatedcv", repeats=5))
+predicciciones.svm.radial4 <- predict(modelo.svm.radial4, test.mejor.resultado.sin.na)
+```
+Veamos la puntuación en kaggel
+```{r 20b}
+salida.modelo.20 <- as.matrix(predicciciones.svm.radial4)
+salida.modelo.20 <- cbind(c(1:(dim(salida.modelo.20)[1])), salida.modelo.20)
+colnames(salida.modelo.20) <- c("Id","Prediction")
+write.table(salida.modelo.20,file="predicciones/Prediccion20.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 05/03/2017 a las 12:17, con un total de 31 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82237.   
+
+![20 puntuación obtenida en Kaggel](imagenes/Puntuacion20.png "20Puntuacion")
+
+
+# SVM (Support Vector Machine)
+Limpiamos el espacio de trabajo
+```{r 21a}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+train.mejor.resultado.sin.na <- train.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","SUPERFICIE_CALZADA","TIPO_ACCIDENTE")]
+test.mejor.resultado.sin.na <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","SUPERFICIE_CALZADA")]
+```
+Vamos a probar esta técnica:
+```{r 21b}
+set.seed(1234)
+modelo.svm <- e1071::svm(TIPO_ACCIDENTE~., data=train.mejor.resultado.sin.na, method="C-classification", kernel="radial", cost=10, gamma=0.1)
+prediccion.svm <- predict(modelo.svm, test.mejor.resultado.sin.na)
+```
+Veamos la puntuación en kaggel
+```{r 21c}
+salida.modelo.21 <- as.matrix(prediccion.svm)
+salida.modelo.21 <- cbind(c(1:(dim(salida.modelo.21)[1])), salida.modelo.21)
+colnames(salida.modelo.21) <- c("Id","Prediction")
+write.table(salida.modelo.21,file="predicciones/Prediccion21.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 05/03/2017 a las 12:26, con un total de 31 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.82296.   
+
+![21 puntuación obtenida en Kaggel](imagenes/Puntuacion21.png "21Puntuacion")
+
+
+# Métodos ensamble de construcción de conjuntos de modelos
+
+## Bagging
+Limpiamos el espacio de trabajo
+```{r 22a}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+train.mejor.resultado.sin.na <- train.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","SUPERFICIE_CALZADA","TIPO_ACCIDENTE")]
+test.mejor.resultado.sin.na <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","SUPERFICIE_CALZADA")]
+```
+
+```{r 22b}
+set.seed(1234)
+modelo.bagging.1 <- adabag::bagging(TIPO_ACCIDENTE~.,data=train.mejor.resultado.sin.na, control=rpart::rpart.control(maxdepth=5, minsplit=15))
+predicciones.bagging.1 <- adabag::predict.bagging(modelo.bagging.1,newdata=test.mejor.resultado.sin.na)
+
+set.seed(1234)
+modelo.bagging.2 <- adabag::bagging(TIPO_ACCIDENTE~.,data=train.mejor.resultado.sin.na,mfinal=20 ,control=rpart::rpart.control(maxdepth=3, minsplit=5))
+predicciones.bagging.2 <- adabag::predict.bagging(modelo.bagging.2,newdata=test.mejor.resultado.sin.na)
+```
+Veamos la puntuación en kaggel
+```{r 22c}
+salida.modelo.22 <- as.matrix(predicciones.bagging.1$class)
+salida.modelo.22 <- cbind(c(1:(dim(salida.modelo.22)[1])), salida.modelo.22)
+colnames(salida.modelo.22) <- c("Id","Prediction")
+write.table(salida.modelo.22,file="predicciones/Prediccion22.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 05/03/2017 a las 12:31, con un total de 31 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.81891.   
+
+![22 puntuación obtenida en Kaggel](imagenes/Puntuacion22.png "22Puntuacion")
+Veamos la puntuación en kaggel
+```{r 23a}
+salida.modelo.23 <- as.matrix(predicciones.bagging.2$class)
+salida.modelo.23 <- cbind(c(1:(dim(salida.modelo.23)[1])), salida.modelo.23)
+colnames(salida.modelo.23) <- c("Id","Prediction")
+write.table(salida.modelo.23,file="predicciones/Prediccion23.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 05/03/2017 a las 12:37, con un total de 31 personas entregadas, se ha quedado en la posición 16 con una puntuación del 0.81891.   
+
+![23 puntuación obtenida en Kaggel](imagenes/Puntuacion23.png "23Puntuacion")
+
+
+## Random forest
+Limpiamos el espacio de trabajo
+```{r 24a}
+rm(list=ls()) 
+train.original <- read.csv("accidentes-kaggle.csv")
+test.original <- read.csv("accidentes-kaggle-test.csv")
+train.sin.na <- train.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24,30)]
+test.sin.na <- test.original[,c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,16,17,18,19,22,23,24)]
+train.mejor.resultado.sin.na <- train.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","SUPERFICIE_CALZADA","TIPO_ACCIDENTE")]
+test.mejor.resultado.sin.na <- test.original[,c("TOT_VEHICULOS_IMPLICADOS","ZONA_AGRUPADA","TRAZADO_NO_INTERSEC","TOT_HERIDOS_LEVES","ZONA","RED_CARRETERA","TIPO_VIA","TIPO_INTERSEC","SUPERFICIE_CALZADA")]
+```
+
+```{r 24b}
+set.seed(1234)
+modelo.random.forest.10 <- randomForest::randomForest(TIPO_ACCIDENTE~.,data=train.mejor.resultado.sin.na,ntree=10)
+print(modelo.random.forest.10)
+randomForest::importance(modelo.random.forest.10)
+plot(modelo.random.forest.10)
+predicciones.rf.10 <- predict(modelo.random.forest.10,newdata=test.mejor.resultado.sin.na)
+```
+Veamos la puntuación en kaggel
+```{r 24c}
+salida.modelo.24 <- as.matrix(predicciones.rf.10)
+salida.modelo.24 <- cbind(c(1:(dim(salida.modelo.24)[1])), salida.modelo.24)
+colnames(salida.modelo.24) <- c("Id","Prediction")
+write.table(salida.modelo.24,file="predicciones/Prediccion24.txt",sep=",",quote = F,row.names = F)
+```
+El resultado de este modelo para la competición de Kaggel, subido el 06/03/2017 a las 10:54, con un total de 32 personas entregadas, se ha quedado en la posición 18 con una puntuación del 0.82089.  
+
+![24 puntuación obtenida en Kaggel](imagenes/Puntuacion24.png "24Puntuacion")
 
 
 
@@ -954,5 +1299,13 @@ El resultado de este modelo para la competición de Kaggel, subido el 03/03/2017
 
 
 
-
-
+# Gráfica de resultados
+```{r graficaFinala}
+indices = c(1:18)
+posicion = c(3/5, 9/14, 9/14, 10/16, 12/18, 13/21, 14/22, 14/22, 16/26, 15/26, 
+            15/26, 15/26, 16/28, 16/28, 16/28, 16/28, 16/29, 16/29)
+puntuacion = c(0.73246, 0.81891, 0.81753, 0.81753, 0.55147, 0.82089, 0.82227, 0.81891, 0.59119, 0.82395,
+              0.82237, 0.82326, 0.82286, 0.82326, 0.82286, 0.82365, 0.81762, 0.81822)
+plot(indices,posicion,main="Posiciones escaladas",xlab="Número de subida",ylab="%Posición",type="o")
+plot(indices,puntuacion,main="Puntuaciones obtenidas",xlab="Número de subida",ylab="Puntuación",type="o")
+```
