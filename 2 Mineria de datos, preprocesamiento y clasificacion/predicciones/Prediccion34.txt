@@ -371,7 +371,7 @@ Id,Prediction
 370,Colision_Vehiculos
 371,Colision_Vehiculos
 372,Colision_Vehiculos
-373,Otro
+373,Atropello
 374,Colision_Vehiculos
 375,Colision_Vehiculos
 376,Salida_Via
@@ -408,7 +408,7 @@ Id,Prediction
 407,Colision_Vehiculos
 408,Salida_Via
 409,Colision_Vehiculos
-410,Vuelco
+410,Atropello
 411,Colision_Vehiculos
 412,Colision_Vehiculos
 413,Colision_Vehiculos
@@ -721,10 +721,10 @@ Id,Prediction
 720,Vuelco
 721,Salida_Via
 722,Colision_Vehiculos
-723,Otro
+723,Colision_Vehiculos
 724,Salida_Via
 725,Otro
-726,Atropello
+726,Otro
 727,Atropello
 728,Colision_Vehiculos
 729,Colision_Vehiculos
@@ -1239,7 +1239,7 @@ Id,Prediction
 1238,Colision_Vehiculos
 1239,Colision_Vehiculos
 1240,Colision_Vehiculos
-1241,Salida_Via
+1241,Atropello
 1242,Colision_Vehiculos
 1243,Atropello
 1244,Colision_Vehiculos
@@ -2509,7 +2509,7 @@ Id,Prediction
 2508,Colision_Vehiculos
 2509,Colision_Vehiculos
 2510,Atropello
-2511,Salida_Via
+2511,Atropello
 2512,Colision_Vehiculos
 2513,Atropello
 2514,Salida_Via
@@ -3234,7 +3234,7 @@ Id,Prediction
 3233,Colision_Vehiculos
 3234,Salida_Via
 3235,Colision_Vehiculos
-3236,Atropello
+3236,Salida_Via
 3237,Colision_Vehiculos
 3238,Colision_Vehiculos
 3239,Colision_Vehiculos
@@ -3933,7 +3933,7 @@ Id,Prediction
 3932,Colision_Vehiculos
 3933,Colision_Vehiculos
 3934,Atropello
-3935,Salida_Via
+3935,Atropello
 3936,Colision_Vehiculos
 3937,Colision_Vehiculos
 3938,Colision_Vehiculos
@@ -4704,7 +4704,7 @@ Id,Prediction
 4703,Salida_Via
 4704,Colision_Vehiculos
 4705,Atropello
-4706,Atropello
+4706,Otro
 4707,Colision_Vehiculos
 4708,Salida_Via
 4709,Colision_Vehiculos
@@ -4763,7 +4763,7 @@ Id,Prediction
 4762,Colision_Vehiculos
 4763,Colision_Vehiculos
 4764,Salida_Via
-4765,Salida_Via
+4765,Atropello
 4766,Colision_Vehiculos
 4767,Colision_Vehiculos
 4768,Colision_Vehiculos
@@ -4859,7 +4859,7 @@ Id,Prediction
 4858,Colision_Vehiculos
 4859,Atropello
 4860,Salida_Via
-4861,Otro
+4861,Atropello
 4862,Atropello
 4863,Colision_Vehiculos
 4864,Salida_Via
@@ -5260,7 +5260,7 @@ Id,Prediction
 5259,Salida_Via
 5260,Salida_Via
 5261,Colision_Vehiculos
-5262,Atropello
+5262,Salida_Via
 5263,Colision_Vehiculos
 5264,Salida_Via
 5265,Colision_Vehiculos
@@ -5375,7 +5375,7 @@ Id,Prediction
 5374,Salida_Via
 5375,Colision_Vehiculos
 5376,Colision_Vehiculos
-5377,Atropello
+5377,Otro
 5378,Salida_Via
 5379,Colision_Vehiculos
 5380,Colision_Vehiculos
@@ -6155,7 +6155,7 @@ Id,Prediction
 6154,Colision_Vehiculos
 6155,Colision_Vehiculos
 6156,Colision_Vehiculos
-6157,Salida_Via
+6157,Colision_Obstaculo
 6158,Colision_Vehiculos
 6159,Colision_Vehiculos
 6160,Colision_Vehiculos
@@ -6242,7 +6242,7 @@ Id,Prediction
 6241,Colision_Vehiculos
 6242,Colision_Vehiculos
 6243,Atropello
-6244,Atropello
+6244,Salida_Via
 6245,Colision_Vehiculos
 6246,Colision_Vehiculos
 6247,Salida_Via
@@ -7436,7 +7436,7 @@ Id,Prediction
 7435,Atropello
 7436,Colision_Vehiculos
 7437,Salida_Via
-7438,Vuelco
+7438,Salida_Via
 7439,Colision_Vehiculos
 7440,Salida_Via
 7441,Atropello
@@ -7557,7 +7557,7 @@ Id,Prediction
 7556,Colision_Vehiculos
 7557,Salida_Via
 7558,Atropello
-7559,Colision_Obstaculo
+7559,Atropello
 7560,Colision_Vehiculos
 7561,Colision_Vehiculos
 7562,Colision_Vehiculos
@@ -7577,7 +7577,7 @@ Id,Prediction
 7576,Colision_Vehiculos
 7577,Otro
 7578,Colision_Vehiculos
-7579,Vuelco
+7579,Atropello
 7580,Salida_Via
 7581,Colision_Vehiculos
 7582,Salida_Via
@@ -7585,7 +7585,7 @@ Id,Prediction
 7584,Colision_Vehiculos
 7585,Atropello
 7586,Colision_Vehiculos
-7587,Colision_Obstaculo
+7587,Atropello
 7588,Atropello
 7589,Colision_Vehiculos
 7590,Colision_Vehiculos
@@ -7845,7 +7845,7 @@ Id,Prediction
 7844,Colision_Vehiculos
 7845,Salida_Via
 7846,Colision_Vehiculos
-7847,Otro
+7847,Vuelco
 7848,Colision_Vehiculos
 7849,Colision_Vehiculos
 7850,Salida_Via
@@ -8705,7 +8705,7 @@ Id,Prediction
 8704,Colision_Vehiculos
 8705,Atropello
 8706,Colision_Vehiculos
-8707,Atropello
+8707,Otro
 8708,Colision_Vehiculos
 8709,Colision_Vehiculos
 8710,Colision_Vehiculos
@@ -8999,7 +8999,7 @@ Id,Prediction
 8998,Atropello
 8999,Colision_Vehiculos
 9000,Salida_Via
-9001,Salida_Via
+9001,Atropello
 9002,Salida_Via
 9003,Salida_Via
 9004,Colision_Vehiculos
@@ -9454,8 +9454,8 @@ Id,Prediction
 9453,Colision_Vehiculos
 9454,Colision_Vehiculos
 9455,Salida_Via
-9456,Atropello
-9457,Salida_Via
+9456,Otro
+9457,Otro
 9458,Colision_Vehiculos
 9459,Colision_Vehiculos
 9460,Colision_Vehiculos
@@ -9498,7 +9498,7 @@ Id,Prediction
 9497,Colision_Vehiculos
 9498,Otro
 9499,Colision_Vehiculos
-9500,Salida_Via
+9500,Atropello
 9501,Salida_Via
 9502,Colision_Vehiculos
 9503,Colision_Vehiculos
@@ -9788,7 +9788,7 @@ Id,Prediction
 9787,Salida_Via
 9788,Colision_Vehiculos
 9789,Salida_Via
-9790,Atropello
+9790,Salida_Via
 9791,Colision_Vehiculos
 9792,Colision_Vehiculos
 9793,Colision_Vehiculos
@@ -10076,7 +10076,7 @@ Id,Prediction
 10075,Colision_Vehiculos
 10076,Salida_Via
 10077,Colision_Vehiculos
-10078,Otro
+10078,Colision_Vehiculos
 10079,Colision_Vehiculos
 10080,Salida_Via
 10081,Colision_Vehiculos
@@ -10360,7 +10360,7 @@ Id,Prediction
 10359,Atropello
 10360,Salida_Via
 10361,Colision_Vehiculos
-10362,Colision_Obstaculo
+10362,Atropello
 10363,Colision_Vehiculos
 10364,Atropello
 10365,Colision_Vehiculos
@@ -10930,7 +10930,7 @@ Id,Prediction
 10929,Salida_Via
 10930,Colision_Vehiculos
 10931,Colision_Vehiculos
-10932,Atropello
+10932,Salida_Via
 10933,Colision_Vehiculos
 10934,Atropello
 10935,Colision_Vehiculos
@@ -11179,7 +11179,7 @@ Id,Prediction
 11178,Colision_Vehiculos
 11179,Salida_Via
 11180,Salida_Via
-11181,Otro
+11181,Atropello
 11182,Colision_Vehiculos
 11183,Salida_Via
 11184,Colision_Vehiculos
@@ -12147,7 +12147,7 @@ Id,Prediction
 12146,Salida_Via
 12147,Colision_Vehiculos
 12148,Salida_Via
-12149,Colision_Obstaculo
+12149,Atropello
 12150,Colision_Vehiculos
 12151,Colision_Vehiculos
 12152,Colision_Vehiculos
@@ -12313,7 +12313,7 @@ Id,Prediction
 12312,Salida_Via
 12313,Colision_Vehiculos
 12314,Colision_Vehiculos
-12315,Salida_Via
+12315,Atropello
 12316,Colision_Vehiculos
 12317,Colision_Vehiculos
 12318,Colision_Vehiculos
@@ -12541,7 +12541,7 @@ Id,Prediction
 12540,Colision_Vehiculos
 12541,Salida_Via
 12542,Salida_Via
-12543,Atropello
+12543,Otro
 12544,Salida_Via
 12545,Colision_Vehiculos
 12546,Colision_Vehiculos
@@ -12601,7 +12601,7 @@ Id,Prediction
 12600,Salida_Via
 12601,Colision_Vehiculos
 12602,Colision_Vehiculos
-12603,Atropello
+12603,Salida_Via
 12604,Colision_Vehiculos
 12605,Colision_Vehiculos
 12606,Atropello
@@ -12636,7 +12636,7 @@ Id,Prediction
 12635,Atropello
 12636,Colision_Vehiculos
 12637,Colision_Vehiculos
-12638,Salida_Via
+12638,Atropello
 12639,Colision_Vehiculos
 12640,Salida_Via
 12641,Colision_Vehiculos
@@ -12679,7 +12679,7 @@ Id,Prediction
 12678,Colision_Vehiculos
 12679,Salida_Via
 12680,Colision_Vehiculos
-12681,Atropello
+12681,Colision_Obstaculo
 12682,Colision_Vehiculos
 12683,Colision_Vehiculos
 12684,Salida_Via
@@ -12948,7 +12948,7 @@ Id,Prediction
 12947,Colision_Vehiculos
 12948,Atropello
 12949,Atropello
-12950,Atropello
+12950,Colision_Obstaculo
 12951,Colision_Vehiculos
 12952,Colision_Vehiculos
 12953,Colision_Vehiculos
@@ -13286,7 +13286,7 @@ Id,Prediction
 13285,Colision_Vehiculos
 13286,Colision_Vehiculos
 13287,Atropello
-13288,Otro
+13288,Atropello
 13289,Colision_Vehiculos
 13290,Colision_Vehiculos
 13291,Colision_Vehiculos
@@ -13608,7 +13608,7 @@ Id,Prediction
 13607,Salida_Via
 13608,Colision_Vehiculos
 13609,Atropello
-13610,Otro
+13610,Atropello
 13611,Salida_Via
 13612,Colision_Vehiculos
 13613,Colision_Vehiculos
@@ -13712,7 +13712,7 @@ Id,Prediction
 13711,Salida_Via
 13712,Colision_Vehiculos
 13713,Atropello
-13714,Vuelco
+13714,Otro
 13715,Colision_Vehiculos
 13716,Salida_Via
 13717,Colision_Vehiculos
@@ -15322,7 +15322,7 @@ Id,Prediction
 15321,Colision_Vehiculos
 15322,Colision_Vehiculos
 15323,Salida_Via
-15324,Atropello
+15324,Otro
 15325,Colision_Vehiculos
 15326,Colision_Vehiculos
 15327,Salida_Via
@@ -15722,7 +15722,7 @@ Id,Prediction
 15721,Vuelco
 15722,Colision_Vehiculos
 15723,Colision_Vehiculos
-15724,Salida_Via
+15724,Otro
 15725,Colision_Vehiculos
 15726,Salida_Via
 15727,Colision_Vehiculos
@@ -16219,7 +16219,7 @@ Id,Prediction
 16218,Colision_Vehiculos
 16219,Colision_Vehiculos
 16220,Colision_Vehiculos
-16221,Colision_Obstaculo
+16221,Atropello
 16222,Colision_Vehiculos
 16223,Colision_Vehiculos
 16224,Salida_Via
@@ -16467,7 +16467,7 @@ Id,Prediction
 16466,Colision_Vehiculos
 16467,Colision_Vehiculos
 16468,Atropello
-16469,Salida_Via
+16469,Colision_Obstaculo
 16470,Salida_Via
 16471,Salida_Via
 16472,Salida_Via
@@ -16753,7 +16753,7 @@ Id,Prediction
 16752,Colision_Vehiculos
 16753,Colision_Vehiculos
 16754,Salida_Via
-16755,Atropello
+16755,Salida_Via
 16756,Colision_Vehiculos
 16757,Salida_Via
 16758,Colision_Vehiculos
@@ -16905,7 +16905,7 @@ Id,Prediction
 16904,Colision_Vehiculos
 16905,Colision_Vehiculos
 16906,Salida_Via
-16907,Otro
+16907,Colision_Obstaculo
 16908,Colision_Vehiculos
 16909,Colision_Vehiculos
 16910,Salida_Via
@@ -16996,7 +16996,7 @@ Id,Prediction
 16995,Atropello
 16996,Colision_Vehiculos
 16997,Colision_Vehiculos
-16998,Salida_Via
+16998,Atropello
 16999,Colision_Vehiculos
 17000,Colision_Vehiculos
 17001,Salida_Via
@@ -17175,7 +17175,7 @@ Id,Prediction
 17174,Colision_Vehiculos
 17175,Salida_Via
 17176,Colision_Vehiculos
-17177,Otro
+17177,Atropello
 17178,Colision_Vehiculos
 17179,Colision_Vehiculos
 17180,Atropello
@@ -18004,7 +18004,7 @@ Id,Prediction
 18003,Salida_Via
 18004,Colision_Vehiculos
 18005,Colision_Vehiculos
-18006,Atropello
+18006,Otro
 18007,Salida_Via
 18008,Colision_Vehiculos
 18009,Colision_Vehiculos
@@ -18506,7 +18506,7 @@ Id,Prediction
 18505,Salida_Via
 18506,Salida_Via
 18507,Salida_Via
-18508,Vuelco
+18508,Atropello
 18509,Colision_Vehiculos
 18510,Colision_Vehiculos
 18511,Atropello
@@ -18520,7 +18520,7 @@ Id,Prediction
 18519,Colision_Vehiculos
 18520,Colision_Vehiculos
 18521,Colision_Vehiculos
-18522,Salida_Via
+18522,Otro
 18523,Colision_Vehiculos
 18524,Colision_Vehiculos
 18525,Colision_Vehiculos
@@ -18651,7 +18651,7 @@ Id,Prediction
 18650,Atropello
 18651,Colision_Vehiculos
 18652,Colision_Vehiculos
-18653,Atropello
+18653,Colision_Obstaculo
 18654,Colision_Vehiculos
 18655,Salida_Via
 18656,Colision_Vehiculos
@@ -19901,7 +19901,7 @@ Id,Prediction
 19900,Colision_Vehiculos
 19901,Colision_Vehiculos
 19902,Colision_Vehiculos
-19903,Atropello
+19903,Vuelco
 19904,Salida_Via
 19905,Colision_Vehiculos
 19906,Colision_Vehiculos
