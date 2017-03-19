@@ -2109,36 +2109,138 @@ write.table(salida.modelo.46,file="predicciones/Prediccion46.txt",sep=",",quote 
 ```
 46 El resultado de este modelo para la competición de Kaggle, subido el 18/03/2017 a las 11:02, con un total de 44 personas entregadas, se ha quedado en la posición 6 con una puntuación del 0.83076. El mejor obtenido hasta el momento.
 
+## Prueba balanceo y eliminación de variables
+
+```{r 47a}
+rm(list=ls()) 
+train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
+test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
+```
+Quito variables y balanceo los datos.
+```{r 47a2}
+train.imputados4$TOT_VICTIMAS=NULL
+test.imputados4$TOT_VICTIMAS=NULL
+train.imputados4$FACTORES_ATMOSFERICOS=NULL
+test.imputados4$FACTORES_ATMOSFERICOS=NULL
+train.imputados4$RED_CARRETERA=NULL
+test.imputados4$RED_CARRETERA=NULL
+train.imputados4$LUMINOSIDAD=NULL
+test.imputados4$LUMINOSIDAD=NULL
+train.imputados4$SUPERFICIE_CALZADA=NULL
+test.imputados4$SUPERFICIE_CALZADA=NULL
+train.imputados4$ACOND_CALZADA=NULL
+test.imputados4$ACOND_CALZADA=NULL
+valores.vuelco <- train.imputados4[train.imputados4$TIPO_ACCIDENTE=="Vuelco",]
+valores.colision.obstaculo <- train.imputados4[train.imputados4$TIPO_ACCIDENTE=="Colision_Obstaculo",]
+valores.otro <- train.imputados4[train.imputados4$TIPO_ACCIDENTE=="Otro",]
+train.imputados4 <- rbind(train.imputados4, valores.vuelco, valores.colision.obstaculo, valores.otro)
+```
+Vamos a probar un random forest multihebra con más árboles para ver si mejoramos los resultados: (No lo he ejecutado para la creación del pdf ya que me da fallo de memoria, pero si lo ejecuto como un script normal de R no tengo ningún problema)
+```{r 47b, eval=FALSE}
+set.seed(1234)
+registerDoSNOW(makeCluster(8, type="SOCK"))
+rf <- foreach::foreach(ntree = rep(750, 8), .combine = combine, .packages = "randomForest") %dopar% randomForest(train.imputados4[,-(dim(train.imputados4)[2])], train.imputados4[,(dim(train.imputados4)[2])], ntree = ntree)
+rf
+randomForest::importance(rf)
+predicciones.rf <- predict(rf,newdata=test.imputados4)
+```
+
+Muestro la imagen que me ha proporcionado el script de R:
+
+![47 modelo](imagenes/modelos/modelo47.png "47Modelo")
+
+Veamos la puntuación en kaggel
+```{r 47c, eval=FALSE}
+salida.modelo <- as.matrix(predicciones.rf)
+salida.modelo <- cbind(c(1:(dim(salida.modelo)[1])), salida.modelo)
+colnames(salida.modelo) <- c("Id","Prediction")
+write.table(salida.modelo,file="predicciones/Prediccion47.txt",sep=",",quote = F,row.names = F)
+```
+47 El resultado de este modelo para la competición de Kaggle, subido el 18/03/2017 a las 11:38, con un total de 44 personas entregadas, se ha quedado en la posición 9 con una puntuación del 0.82622.  
+
+## Prueba balanceo y eliminación de variables 2
+
+```{r 48a}
+rm(list=ls()) 
+train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
+test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
+```
+Quito variables y balanceo los datos.
+```{r 48a2}
+train.imputados4$TOT_VICTIMAS=NULL
+test.imputados4$TOT_VICTIMAS=NULL
+train.imputados4$FACTORES_ATMOSFERICOS=NULL
+test.imputados4$FACTORES_ATMOSFERICOS=NULL
+train.imputados4$RED_CARRETERA=NULL
+test.imputados4$RED_CARRETERA=NULL
+train.imputados4$LUMINOSIDAD=NULL
+test.imputados4$LUMINOSIDAD=NULL
+train.imputados4$SUPERFICIE_CALZADA=NULL
+test.imputados4$SUPERFICIE_CALZADA=NULL
+train.imputados4$ACOND_CALZADA=NULL
+test.imputados4$ACOND_CALZADA=NULL
+train.imputados4$ZONA_AGRUPADA=NULL
+test.imputados4$ZONA_AGRUPADA=NULL
+valores.vuelco <- train.imputados4[train.imputados4$TIPO_ACCIDENTE=="Vuelco",]
+valores.colision.obstaculo <- train.imputados4[train.imputados4$TIPO_ACCIDENTE=="Colision_Obstaculo",]
+valores.otro <- train.imputados4[train.imputados4$TIPO_ACCIDENTE=="Otro",]
+train.imputados4 <- rbind(train.imputados4, valores.vuelco, valores.colision.obstaculo, valores.otro)
+```
+Vamos a probar un random forest multihebra con más árboles para ver si mejoramos los resultados: (No lo he ejecutado para la creación del pdf ya que me da fallo de memoria, pero si lo ejecuto como un script normal de R no tengo ningún problema)
+```{r 48b, eval=FALSE}
+set.seed(1234)
+registerDoSNOW(makeCluster(8, type="SOCK"))
+rf <- foreach::foreach(ntree = rep(750, 8), .combine = combine, .packages = "randomForest") %dopar% randomForest(train.imputados4[,-(dim(train.imputados4)[2])], train.imputados4[,(dim(train.imputados4)[2])], ntree = ntree)
+rf
+randomForest::importance(rf)
+predicciones.rf <- predict(rf,newdata=test.imputados4)
+```
+
+Muestro la imagen que me ha proporcionado el script de R:
+
+![48 modelo](imagenes/modelos/modelo48.png "48Modelo")
+
+Veamos la puntuación en kaggel
+```{r 48c, eval=FALSE}
+salida.modelo <- as.matrix(predicciones.rf)
+salida.modelo <- cbind(c(1:(dim(salida.modelo)[1])), salida.modelo)
+colnames(salida.modelo) <- c("Id","Prediction")
+write.table(salida.modelo,file="predicciones/Prediccion48.txt",sep=",",quote = F,row.names = F)
+```
+48 El resultado de este modelo para la competición de Kaggle, subido el 18/03/2017 a las 12:31, con un total de 44 personas entregadas, se ha quedado en la posición 9 con una puntuación del 0.82622.  
+
+
+
 \newpage 
 
 # Gráfica de resultados
 ```{r graficaFinal}
-indices = c(1:46)
+indices = c(1:48)
 posicion = c(3/5, 9/14, 9/14, 10/16, 12/18, 13/21, 14/22, 14/22, 16/26, 15/26, 
             15/26, 15/26, 16/28, 16/28, 16/28, 16/28, 16/29, 16/29, 16/31, 16/31, 
             16/31, 16/31, 16/31, 18/32, 18/32, 18/32, 18/32, 9/32, 7/34, 5/34, 
             5/34, 5/34, 5/34, 4/34, 4/34, 4/36, 4/36, 4/36, 5/36, 8/43,
-            8/43, 8/43, 8/43, 9/44, 9/44, 6/44)
+            8/43, 8/43, 8/43, 9/44, 9/44, 6/44, 6/44, 6/44)
 posicion2 = 1/posicion
 puntuacion = c(0.73246, 0.81891, 0.81753, 0.81753, 0.55147, 0.82089, 0.82227, 0.81891, 0.59119, 0.82395,
               0.82237, 0.82326, 0.82286, 0.82326, 0.82286, 0.82365, 0.81762, 0.81822, 0.82256, 0.82237, 
               0.82296, 0.81891, 0.81891, 0.82089, 0.82306, 0.81891, 0.82000, 0.82859, 0.82909, 0.82958, 
               0.82928, 0.82523, 0.82444, 0.82978, 0.82918, 0.82177, 0.82928, 0.82968, 0.82978, 0.82948,
-              0.82869, 0.82869, 0.82879, 0.82513, 0.82543, 0.83076)
+              0.82869, 0.82869, 0.82879, 0.82513, 0.82543, 0.83076, 0.82622, 0.82622)
 plot(indices,posicion2,main="Posiciones escaladas",xlab="Número de subida",ylab="%Posición",type="o")
 plot(indices,puntuacion,main="Puntuaciones obtenidas",xlab="Número de subida",ylab="Puntuación",type="o")
 ```
 
 Muestro la gráfica de la subida 21 en adelante para apreciar mejor la diferencia:
 ```{r graficaFinal2}
-indices = c(21:46)
+indices = c(21:48)
 posicion = c(16/31, 16/31, 16/31, 18/32, 18/32, 18/32, 18/32, 9/32, 7/34, 5/34, 
             5/34, 5/34, 5/34, 4/34, 4/34, 4/36, 4/36, 4/36, 5/36, 8/43,
-            8/43, 8/43, 8/43, 9/44, 9/44, 6/44)
+            8/43, 8/43, 8/43, 9/44, 9/44, 6/44, 6/44, 6/44)
 posicion2 = 1/posicion
 puntuacion = c(0.82296, 0.81891, 0.81891, 0.82089, 0.82306, 0.81891, 0.82000, 0.82859, 0.82909, 0.82958, 
               0.82928, 0.82523, 0.82444, 0.82978, 0.82918, 0.82177, 0.82928, 0.82968, 0.82978, 0.82948,
-              0.82869, 0.82869, 0.82879, 0.82513, 0.82543, 0.83076)
+              0.82869, 0.82869, 0.82879, 0.82513, 0.82543, 0.83076, 0.82622, 0.82622)
 plot(indices,posicion2,main="Posiciones escaladas",xlab="Número de subida",ylab="%Posición",type="o")
 plot(indices,puntuacion,main="Puntuaciones obtenidas",xlab="Número de subida",ylab="Puntuación",type="o")
 ```
