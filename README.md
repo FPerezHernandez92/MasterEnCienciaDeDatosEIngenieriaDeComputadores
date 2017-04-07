@@ -1,18 +1,18 @@
-# Master en Ciencia De Datos e Ingenieria de Computadores
-Practicas y trabajos realizados en el Master en cada una de sus asignaturas
+# Master en Ciencia De Datos e Ingeniería de Computadores
+Prácticas y trabajos realizados en el Master en cada una de sus asignaturas
 
 ## 1 Emprendimiento y transferencia de conocimiento:
-En esta asignatura se ha creado un plan de negocio sobre una aplicacion, MiSuper App con la que podrias realizar la compra tanto online como fisica a partir de una lista de la compra con la que se te indicara cual es el supermercado mas cercano y que mas te conviene para ahorrar lo maximo posible. Se ha realiado el modelo CANVAS, el DAFO, las conclusiones sobre estos, una ficha de financiazion y una busqueda de patentes, una prevision de beneficios y un Elevator Pitch presentando la aplicacion junto con a una practica de creatividad mediante un binomio fantastico y relatar una experiencia sobre ser jefe o hacer de jefe.
+En esta asignatura se ha creado un plan de negocio sobre una aplicación, MiSuper App con la que podrías realizar la compra tanto online como física a partir de una lista de la compra con la que se te indicara cual es el supermercado más cercano y que más te conviene para ahorrar lo máximo posible. Se ha realizado el modelo CANVAS, el DAFO, las conclusiones sobre estos, una ficha de financiación y una búsqueda de patentes, una previsión de beneficios y un Elevator Pitch presentando la aplicación junto con a una práctica de creatividad mediante un binomio fantástico y relatar una experiencia sobre ser jefe o hacer de jefe.
 
-## 1 Introduccion a la Ciencia de Datos:
-Primeramente se realizaron unos ejercicios de introduccion para familiarizarnos con R. Seguidamente unos sobre graficas. A continuacion ejercicios sobre regresion y de clasificacion. Por ultimo se realizo un estudio sobre dos problemas, uno para regresion y otro para clasificacion. Este fue mi trabajo final de la asignatura. Se implementaron para Regresion tecnicas de regresion simple, multiple y knn para regresion. Para Clasificacion se implementaron tecnicas de LDA, QDA, GLM y KNN. Finalmente se hicieron comparativas con los test de Wilcoxon y de Friedman. 
+## 1 Introducción a la Ciencia de Datos:
+Primeramente, se realizaron unos ejercicios de introducción para familiarizarnos con R. Seguidamente unos sobre gráficas. A continuación, ejercicios sobre regresión y de clasificación. Por último, se realizó un estudio sobre dos problemas, uno para regresión y otro para clasificación. Este fue mi trabajo final de la asignatura. Se implementaron para Regresión técnicas de regresión simple, múltiple y knn para regresión. Para Clasificación se implementaron técnicas de LDA, QDA, GLM y KNN. Finalmente se hicieron comparativas con los test de Wilcoxon y de Friedman. 
 
-## 1 Metodologia de la Investigacion
-En esta asignatura se ha aprendido a realizar un paper de investigacion y poder presentarlo en un congreso que se ha realizado en la clase, simulando un congreso real. En esta comparativa se ha visto las diferencias sobre google scholar, Microsoft Academic, Web of Science y Scopus.
+## 1 Metodología de la Investigación
+En esta asignatura se ha aprendido a realizar un paper de investigación y poder presentarlo en un congreso que se ha realizado en la clase, simulando un congreso real. En esta comparativa se ha visto las diferencias sobre google scholar, Microsoft Academic, Web of Science y Scopus.
 
-## 2 Mineria de datos: Aprendizaje no supervisado y deteccion de anomalias:
-En la parte practica de esta asignatura lo primero que se ha dado ha sido la deteccion de anomalias en R.
-En la parte de reglas de asociacion, se ha visto, en la primera parte, como extraer reglas de una BD con el metodo apriori. En la segunda parte se han visto como hacer el analisis con items negados, y como usar el paquete MOPNAR de RKEEL y como hacer el analisis de reglas en grupos. 
+## 2 Minería de datos: Aprendizaje no supervisado y detección de anomalías:
+En la parte práctica de esta asignatura lo primero que se ha dado ha sido la detección de anomalías en R.
+En la parte de reglas de asociación, se ha visto, en la primera parte, como extraer reglas de una BD con el método apriori. En la segunda parte se han visto cómo hacer el análisis con ítems negados, y como usar el paquete MOPNAR de RKEEL y cómo hacer el análisis de reglas en grupos. 
 
-## 2 Mineria de datos: Preprocesamiento y clasificacion:
-En el trabajo final de esta asignatura hemos aplciado las tecnicas vistas en clase para enfrentarnos a un dataset y poder realizar su preprocesamiento y su clasificacion, ya que era un problema de este tipo. Se realizo una competicion entre todos los alumnos de la asignatura y se tuvieron puntuaciones para realizar esta competicion mas interesante. 
+## 2 Minería de datos: Preprocesamiento y clasificación:
+En el trabajo final de esta asignatura hemos aplicado las técnicas vistas en clase para enfrentarnos a un dataset y poder realizar su preprocesamiento y su clasificación, ya que era un problema de este tipo. Se realizó una competición entre todos los alumnos de la asignatura y se tuvieron puntuaciones para realizar esta competición más interesante. 
