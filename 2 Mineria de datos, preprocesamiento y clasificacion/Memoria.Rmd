@@ -1,7 +1,7 @@
 ---
 title: "Memoria Competición Kaggel Preprocesamiento"
 author: "Francisco Pérez Hernández"
-date: "09/03/2017"
+date: "01/04/2017"
 output: 
   pdf_document: 
     number_sections: yes
@@ -1832,7 +1832,7 @@ rm(list=ls())
 train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
 test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
 ```
-Quito la variable TOT_VICTIMAS ya que en la última ejecución era la que peores resultados obtenia en la importancia.
+Quito la variable TOT_VICTIMAS ya que en la última ejecución era la que peores resultados obtenía en la importancia.
 ```{r 40a2}
 train.imputados4$TOT_VICTIMAS=NULL
 test.imputados4$TOT_VICTIMAS=NULL
@@ -1868,7 +1868,7 @@ rm(list=ls())
 train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
 test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
 ```
-Quito la variable FACTORES_ATMOSFERICOS ya que en la última ejecución era la que peores resultados obtenia en la importancia.
+Quito la variable FACTORES_ATMOSFERICOS ya que en la última ejecución era la que peores resultados obtenía en la importancia.
 ```{r 41a2}
 train.imputados4$TOT_VICTIMAS=NULL
 test.imputados4$TOT_VICTIMAS=NULL
@@ -1904,7 +1904,7 @@ rm(list=ls())
 train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
 test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
 ```
-Quito la variable RED_CARRETERA ya que en la última ejecución era la que peores resultados obtenia en la importancia.
+Quito la variable RED_CARRETERA ya que en la última ejecución era la que peores resultados obtenía en la importancia.
 ```{r 42a2}
 train.imputados4$TOT_VICTIMAS=NULL
 test.imputados4$TOT_VICTIMAS=NULL
@@ -1942,7 +1942,7 @@ rm(list=ls())
 train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
 test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
 ```
-Quito la variable LUMINOSIDAD ya que en la última ejecución era la que peores resultados obtenia en la importancia.
+Quito la variable LUMINOSIDAD ya que en la última ejecución era la que peores resultados obtenía en la importancia.
 ```{r 43a2}
 train.imputados4$TOT_VICTIMAS=NULL
 test.imputados4$TOT_VICTIMAS=NULL
@@ -1983,7 +1983,7 @@ rm(list=ls())
 train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
 test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
 ```
-Quito la variable SUPERFICIE_CALZADA ya que en la última ejecución era la que peores resultados obtenia en la importancia.
+Quito la variable SUPERFICIE_CALZADA ya que en la última ejecución era la que peores resultados obtenía en la importancia.
 ```{r 44a2}
 train.imputados4$TOT_VICTIMAS=NULL
 test.imputados4$TOT_VICTIMAS=NULL
@@ -2026,7 +2026,7 @@ rm(list=ls())
 train.imputados4 <- read.csv("datasetmodificados/train-imputados4.csv")
 test.imputados4 <- read.csv("datasetmodificados/test-imputados4.csv")
 ```
-Quito la variable ACOND_CALZADA ya que en la última ejecución era la que peores resultados obtenia en la importancia.
+Quito la variable ACOND_CALZADA ya que en la última ejecución era la que peores resultados obtenía en la importancia.
 ```{r 45a2}
 train.imputados4$TOT_VICTIMAS=NULL
 test.imputados4$TOT_VICTIMAS=NULL
@@ -2213,36 +2213,36 @@ write.table(salida.modelo,file="predicciones/Prediccion48.txt",sep=",",quote = F
 
 \newpage 
 
-# Gráfica de resultados
+# Gráfica de resultados y conclusiones
 ```{r graficaFinal}
-indices = c(1:48)
+indices = c(1:49)
 posicion = c(3/5, 9/14, 9/14, 10/16, 12/18, 13/21, 14/22, 14/22, 16/26, 15/26, 
             15/26, 15/26, 16/28, 16/28, 16/28, 16/28, 16/29, 16/29, 16/31, 16/31, 
             16/31, 16/31, 16/31, 18/32, 18/32, 18/32, 18/32, 9/32, 7/34, 5/34, 
             5/34, 5/34, 5/34, 4/34, 4/34, 4/36, 4/36, 4/36, 5/36, 8/43,
-            8/43, 8/43, 8/43, 9/44, 9/44, 6/44, 6/44, 6/44)
+            8/43, 8/43, 8/43, 9/44, 9/44, 6/44, 6/44, 6/44, 39/54)
 posicion2 = 1/posicion
 puntuacion = c(0.73246, 0.81891, 0.81753, 0.81753, 0.55147, 0.82089, 0.82227, 0.81891, 0.59119, 0.82395,
               0.82237, 0.82326, 0.82286, 0.82326, 0.82286, 0.82365, 0.81762, 0.81822, 0.82256, 0.82237, 
               0.82296, 0.81891, 0.81891, 0.82089, 0.82306, 0.81891, 0.82000, 0.82859, 0.82909, 0.82958, 
               0.82928, 0.82523, 0.82444, 0.82978, 0.82918, 0.82177, 0.82928, 0.82968, 0.82978, 0.82948,
-              0.82869, 0.82869, 0.82879, 0.82513, 0.82543, 0.83076, 0.82622, 0.82622)
+              0.82869, 0.82869, 0.82879, 0.82513, 0.82543, 0.83076, 0.82622, 0.82622, 0.82564)
 plot(indices,posicion2,main="Posiciones escaladas",xlab="Número de subida",ylab="%Posición",type="o")
 plot(indices,puntuacion,main="Puntuaciones obtenidas",xlab="Número de subida",ylab="Puntuación",type="o")
 ```
 
 Muestro la gráfica de la subida 21 en adelante para apreciar mejor la diferencia:
 ```{r graficaFinal2}
-indices = c(21:48)
+indices = c(21:49)
 posicion = c(16/31, 16/31, 16/31, 18/32, 18/32, 18/32, 18/32, 9/32, 7/34, 5/34, 
             5/34, 5/34, 5/34, 4/34, 4/34, 4/36, 4/36, 4/36, 5/36, 8/43,
-            8/43, 8/43, 8/43, 9/44, 9/44, 6/44, 6/44, 6/44)
+            8/43, 8/43, 8/43, 9/44, 9/44, 6/44, 6/44, 6/44, 39/54)
 posicion2 = 1/posicion
 puntuacion = c(0.82296, 0.81891, 0.81891, 0.82089, 0.82306, 0.81891, 0.82000, 0.82859, 0.82909, 0.82958, 
               0.82928, 0.82523, 0.82444, 0.82978, 0.82918, 0.82177, 0.82928, 0.82968, 0.82978, 0.82948,
-              0.82869, 0.82869, 0.82879, 0.82513, 0.82543, 0.83076, 0.82622, 0.82622)
+              0.82869, 0.82869, 0.82879, 0.82513, 0.82543, 0.83076, 0.82622, 0.82622, 0.82564)
 plot(indices,posicion2,main="Posiciones escaladas",xlab="Número de subida",ylab="%Posición",type="o")
 plot(indices,puntuacion,main="Puntuaciones obtenidas",xlab="Número de subida",ylab="Puntuación",type="o")
 ```
 
-
+Como se puede ver, el resultado final obtenido es menor del esperado, pudiendo deberse a un pequeño sobre ajuste en el modelo final. Mi resultado ha sido no obstante bastante bueno y la competición me ha servido para poder ver distintas técnicas de preprocesamiento y poder enfrentarme a un nuevo problema.
