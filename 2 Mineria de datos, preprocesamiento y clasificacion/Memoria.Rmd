@@ -38,7 +38,7 @@ library("doSNOW")
 
 # Introducción al problema y a Kaggel
 Lo primero que se pretende realizar en este apartado es leer el dataset que nos han dado y realizar una subida a la plataforma Kaggel para obtener una primera puntuación.
-Mi usuario en Kaggel es "PacoPollos".
+Mi usuario en Kaggel es "PacoPollos" para las primeras subidas. En las siguientes, lo he cambiado por mi nombre, "Francisco Pérez Hernández".
 
 ## Lectura del dataset accidentes
 Vamos a leer tanto los archivos de train como test dados.
